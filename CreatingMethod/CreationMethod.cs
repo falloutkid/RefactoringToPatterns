@@ -15,10 +15,15 @@ namespace CreationMethod
         DateTime maturity_;
         DateTime expiry_;
 
-        public Loan(double commitment, int riskRating, DateTime maturity)
+        Loan(double commitment, int riskRating, DateTime maturity)
             : this(null, commitment, 0.0, riskRating, maturity, new DateTime(DateTime.MinValue.Ticks))
         {
         }
+        public static Loan createTermLoan(double commitment, int riskRating, DateTime maturity)
+        {
+            return new Loan(commitment, riskRating, maturity);
+        }
+
         public Loan(double commitment, int riskRating, DateTime maturity, DateTime expiry)
             : this(null, commitment, 0.0, riskRating, maturity, expiry)
         {
