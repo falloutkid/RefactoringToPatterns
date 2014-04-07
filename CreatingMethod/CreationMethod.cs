@@ -20,20 +20,32 @@ namespace CreationMethod
             return new Loan(null, commitment, 0.0, riskRating, maturity, new DateTime(DateTime.MinValue.Ticks));
         }
 
-        public Loan(double commitment, int riskRating, DateTime maturity, DateTime expiry)
-            : this(null, commitment, 0.0, riskRating, maturity, expiry)
+        public static Loan createTermLoan(CaptalStrategy captalStrategy, double commitment, double outstanding, int riskRating, DateTime maturity)
         {
-        }
-        public Loan(double commitment, double outstanding, int riskRating, DateTime maturity, DateTime expiry)
-            : this(null, commitment, outstanding, riskRating, maturity, expiry)
-        {
-        }
-        public Loan(CaptalStrategy captalStrategy, double commitment, int riskRating, DateTime maturity, DateTime expiry)
-            : this(captalStrategy, commitment, 0.0, riskRating, maturity, expiry)
-        {
+            return new Loan(captalStrategy, commitment, outstanding, riskRating, maturity, new DateTime(DateTime.MinValue.Ticks));
         }
 
-        public Loan(CaptalStrategy captalStrategy, double commitment, double outstanding, int riskRating, DateTime maturity, DateTime expiry)
+        public static Loan createRevolver(double commitment, double outstanding, int riskRating, DateTime expiry)
+        {
+            return new Loan(null, commitment, outstanding, riskRating, new DateTime(DateTime.MinValue.Ticks), expiry);
+        }
+
+        public static Loan createRevolver(CaptalStrategy captalStrategy, double commitment, double outstanding, int riskRating, DateTime expiry)
+        {
+            return new Loan(captalStrategy, commitment, outstanding, riskRating, new DateTime(DateTime.MinValue.Ticks), expiry);
+        }
+
+        public static Loan createRCTL(double commitment, double outstanding, int riskRating, DateTime maturity, DateTime expiry)
+        {
+            return new Loan(null, commitment, outstanding, riskRating, maturity, expiry);
+        }
+
+        public static Loan createRCTL(CaptalStrategy captalStrategy, double commitment, double outstanding, int riskRating, DateTime maturity, DateTime expiry)
+        {
+            return new Loan(captalStrategy, commitment, outstanding, riskRating, maturity, expiry);
+        }
+
+        private Loan(CaptalStrategy captalStrategy, double commitment, double outstanding, int riskRating, DateTime maturity, DateTime expiry)
         {
             commitment_ = commitment;
             outstanding_ = outstanding;
