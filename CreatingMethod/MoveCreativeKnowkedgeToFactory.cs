@@ -14,13 +14,24 @@ namespace PatternOrientedRefactoring
 
     public interface Node { }
 
+    class NodeFactory
+    {
+        public Node createStringNode(StringBuilder textBuffer, int textBegin, int textEnd, Boolean shouldDecode)
+        {
+            if (shouldDecode)
+                return new DecodingStringNode(new StringNode(textBuffer, textBegin, textEnd));
+            return new StringNode(textBuffer, textBegin, textEnd);
+        }
+    }
+
     class StringParser
     {
         public Node find(StringBuilder textBuffer, int textBegin, int textEnd, bool shouldDecode)
         {
             Parser parser = new Parser();
+            NodeFactory nodeFactory = new NodeFactory();
             parser.ShouldDecode = shouldDecode;
-            return StringNode.createStringNode(textBuffer, textBegin, textEnd, parser.ShouldDecode);
+            return nodeFactory.createStringNode(textBuffer, textBegin, textEnd, parser.ShouldDecode);
         }
     }
     class DecodingStringNode : Node
@@ -29,15 +40,8 @@ namespace PatternOrientedRefactoring
     }
     class StringNode : Node
     {
-        StringNode(StringBuilder textBuffer, int textBegin, int textEnd)
+        public StringNode(StringBuilder textBuffer, int textBegin, int textEnd)
         {
         }
-        public static Node createStringNode(StringBuilder textBuffer, int textBegin, int textEnd, Boolean shouldDecode)
-        {
-            if (shouldDecode)
-                return new DecodingStringNode(new StringNode(textBuffer, textBegin, textEnd));
-            return new StringNode(textBuffer, textBegin, textEnd);
-        }
-
     }
 }
