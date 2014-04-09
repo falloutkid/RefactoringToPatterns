@@ -22,22 +22,22 @@ namespace PatternOrientedRefactoring
             parser.ShouldDecode = shouldDecode;
             return StringNode.createStringNode(textBuffer, textBegin, textEnd, parser.ShouldDecode);
         }
-        class DecodingStringNode : Node
+    }
+    class DecodingStringNode : Node
+    {
+        public DecodingStringNode(StringNode string_node) { }
+    }
+    class StringNode : Node
+    {
+        StringNode(StringBuilder textBuffer, int textBegin, int textEnd)
         {
-            public DecodingStringNode(StringNode string_node) { }
         }
-        class StringNode : Node
+        public static Node createStringNode(StringBuilder textBuffer, int textBegin, int textEnd, Boolean shouldDecode)
         {
-            StringNode(StringBuilder textBuffer, int textBegin, int textEnd)
-            {
-            }
-            public static Node createStringNode(StringBuilder textBuffer, int textBegin, int textEnd, Boolean shouldDecode)
-            {
-                if (shouldDecode)
-                    return new DecodingStringNode(new StringNode(textBuffer, textBegin, textEnd));
-                return new StringNode(textBuffer, textBegin, textEnd);
-            }
+            if (shouldDecode)
+                return new DecodingStringNode(new StringNode(textBuffer, textBegin, textEnd));
+            return new StringNode(textBuffer, textBegin, textEnd);
+        }
 
-        }
     }
 }
