@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleCode", "SampleCode\Sa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{B5DFCFE4-C3B1-4E3E-A3D5-DDF1940A1059}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreationMethod", "CreatingMethod\CreationMethod.csproj", "{92F6A5E8-B4B4-464F-8100-EBABF097BE69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatternOrientedRefactoring", "CreatingMethod\PatternOrientedRefactoring.csproj", "{92F6A5E8-B4B4-464F-8100-EBABF097BE69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
