@@ -8,7 +8,7 @@ namespace PatternOrientedRefactoring
 {
     class Parser
     {
-        public StringNodeParsingOption stringNodeParsingOption { set; get; }
+        public NodeFactory nodeFactory { set; get; }
         public Boolean ShouldRemoveEscapeCharactor { set; get; }
     }
 
@@ -16,17 +16,21 @@ namespace PatternOrientedRefactoring
 
     class NodeFactory
     {
-        public Node createStringNode(StringBuilder textBuffer, int textBegin, int textEnd, Boolean shouldDecode)
-        {
-            if (shouldDecode)
-                return new DecodingStringNode(new StringNode(textBuffer, textBegin, textEnd));
-            return new StringNode(textBuffer, textBegin, textEnd);
-        }
-    }
-
-     class StringNodeParsingOption
-    {
          public Boolean decodeStringNodes { set; get; }
+
+         public Node createStringNode(StringBuilder textBuffer, int textBegin, int textEnd)
+         {
+             if(decodeStringNodes)
+                 return new DecodingStringNode(new StringNode(textBuffer, textBegin, textEnd));
+             return new StringNode(textBuffer, textBegin, textEnd); 
+         }
+
+         public Node createStringNode(StringBuilder textBuffer, int textBegin, int textEnd, Boolean shouldDecode)
+         {
+             if (shouldDecode)
+                 return new DecodingStringNode(new StringNode(textBuffer, textBegin, textEnd));
+             return new StringNode(textBuffer, textBegin, textEnd);
+         }
     }
 
     class StringParser
@@ -35,12 +39,11 @@ namespace PatternOrientedRefactoring
         {
             Parser parser = new Parser();
             NodeFactory nodeFactory = new NodeFactory();
+            nodeFactory.decodeStringNodes = shouldDecode;
 
-            StringNodeParsingOption stringNodeOption = new StringNodeParsingOption();
-            stringNodeOption.decodeStringNodes = shouldDecode;
-            parser.stringNodeParsingOption = stringNodeOption;
+            parser.nodeFactory = nodeFactory;
 
-            return nodeFactory.createStringNode(textBuffer, textBegin, textEnd, parser.stringNodeParsingOption.decodeStringNodes);
+            return parser.nodeFactory.createStringNode(textBuffer, textBegin, textEnd);
         }
     }
     class DecodingStringNode : Node
