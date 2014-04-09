@@ -8,7 +8,7 @@ namespace PatternOrientedRefactoring
 {
     class Parser
     {
-        public Boolean ShouldDecode { set; get; }
+        public StringNodeParsingOption stringNodeParsingOption { set; get; }
         public Boolean ShouldRemoveEscapeCharactor { set; get; }
     }
 
@@ -24,14 +24,23 @@ namespace PatternOrientedRefactoring
         }
     }
 
+     class StringNodeParsingOption
+    {
+         public Boolean decodeStringNodes { set; get; }
+    }
+
     class StringParser
     {
         public Node find(StringBuilder textBuffer, int textBegin, int textEnd, bool shouldDecode)
         {
             Parser parser = new Parser();
             NodeFactory nodeFactory = new NodeFactory();
-            parser.ShouldDecode = shouldDecode;
-            return nodeFactory.createStringNode(textBuffer, textBegin, textEnd, parser.ShouldDecode);
+
+            StringNodeParsingOption stringNodeOption = new StringNodeParsingOption();
+            stringNodeOption.decodeStringNodes = shouldDecode;
+            parser.stringNodeParsingOption = stringNodeOption;
+
+            return nodeFactory.createStringNode(textBuffer, textBegin, textEnd, parser.stringNodeParsingOption.decodeStringNodes);
         }
     }
     class DecodingStringNode : Node
