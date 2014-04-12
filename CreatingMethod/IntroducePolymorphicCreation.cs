@@ -21,7 +21,17 @@ namespace PatternOrientedRefactoring
         }
         public void addBelow(string tagName) { }
         public void addAbove(string tagName) { }
+    }
 
+    class XMLBuilder : OutputBuilder
+    {
+        string tag_name_;
+        public XMLBuilder(string tagName)
+        {
+            tag_name_ = tagName;
+        }
+        public void addBelow(string tagName) { }
+        public void addAbove(string tagName) { }
     }
 
     public class DOMBuilderTest
@@ -31,6 +41,38 @@ namespace PatternOrientedRefactoring
         private OutputBuilder createBuilder(string rootName)
         {
             return new DOMBuilder(rootName);
+        }
+
+        public void testAddAboveRoot()
+        {
+            String invalidResult =
+            "<orders>" +
+              "<order>" +
+              "</order>" +
+            "</orders>" +
+            "<customer>" +
+            "</customer>";
+            builder = createBuilder("orders");
+            builder.addBelow("order");
+            try
+            {
+                builder.addAbove("customer");
+                System.Diagnostics.Debug.Assert(false, "expecting Exception");
+            }
+            catch (Exception ignored)
+            {
+                System.Diagnostics.Debug.WriteLine(ignored.Message.ToString());
+            }
+        }
+    }
+
+    public class XMLBuilderTest
+    {
+        private OutputBuilder builder;
+
+        private OutputBuilder createBuilder(string rootName)
+        {
+            return new XMLBuilder(rootName);
         }
 
         public void testAddAboveRoot()
