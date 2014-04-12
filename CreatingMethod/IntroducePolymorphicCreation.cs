@@ -28,6 +28,11 @@ namespace PatternOrientedRefactoring
     {
         private OutputBuilder builder;
 
+        private OutputBuilder createBuilder(string rootName)
+        {
+            return new DOMBuilder(rootName);
+        }
+
         public void testAddAboveRoot()
         {
             String invalidResult =
@@ -37,7 +42,7 @@ namespace PatternOrientedRefactoring
             "</orders>" +
             "<customer>" +
             "</customer>";
-            builder = new DOMBuilder("orders");  // used to be new XMLBuilder("orders")
+            builder = createBuilder("orders");
             builder.addBelow("order");
             try
             {
