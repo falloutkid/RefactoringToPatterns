@@ -34,7 +34,12 @@ namespace PatternOrientedRefactoring
         public void addAbove(string tagName) { }
     }
 
-    public class DOMBuilderTest
+    public class AbstractBuilderTest
+    {
+
+    }
+
+    public class DOMBuilderTest:AbstractBuilderTest
     {
         private OutputBuilder builder;
 
@@ -66,7 +71,7 @@ namespace PatternOrientedRefactoring
         }
     }
 
-    public class XMLBuilderTest
+    public class XMLBuilderTest:AbstractBuilderTest
     {
         private OutputBuilder builder;
 
