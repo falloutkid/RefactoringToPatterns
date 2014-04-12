@@ -45,5 +45,16 @@ namespace PatternOrientedRefactoring
             /// Add child
             current.ParentNode.AppendChild(element);
         }
+
+        public void addToParent(string childTagName)
+        {
+            /// Create a new node.
+            XmlElement element = doc.CreateElement(childTagName);
+            //           element.InnerText = "";
+
+            /// Add child
+            doc.FirstChild.AppendChild(element);
+            current = doc.FirstChild.LastChild;
+        }
     }
 }
