@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EncapsulateClassesWithFactory.cs" />
     <Compile Include="ReplaceConstructorsWithCreationMethods.cs" />
     <Compile Include="MoveCreativeKnowkedgeToFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
