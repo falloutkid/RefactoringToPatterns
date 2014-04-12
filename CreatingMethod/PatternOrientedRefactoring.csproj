@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EncapsulateClassesWithFactory.cs" />
+    <Compile Include="EncapsulateCompositeWithBuilder.cs" />
     <Compile Include="IntroducePolymorphicCreation.cs" />
     <Compile Include="ReplaceConstructorsWithCreationMethods.cs" />
     <Compile Include="MoveCreativeKnowkedgeToFactory.cs" />
