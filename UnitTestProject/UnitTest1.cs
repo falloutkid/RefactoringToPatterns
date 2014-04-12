@@ -44,5 +44,19 @@ namespace UnitTestProject
             String actualXml = builder.toXml();
             Assert.AreEqual(expectedXml, actualXml);
         }
+
+        [TestMethod]
+        public void TestTagBuilerChildren()
+        {
+            String expectedXml = "<flavors>" + "<flavor>" + "<requirements>" + "<requirement />" + "</requirements>" + "</flavor>" + "</flavors>";
+
+            TagBuilder builder = new TagBuilder("flavors");
+            builder.addChild("flavor");
+            builder.addChild("requirements");
+            builder.addChild("requirement");
+
+            String actualXml = builder.toXml();
+            Assert.AreEqual(expectedXml, actualXml);
+        }
     }
 }

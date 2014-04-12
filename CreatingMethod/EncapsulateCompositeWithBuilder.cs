@@ -12,12 +12,12 @@ namespace PatternOrientedRefactoring
     public class TagBuilder
     {
         private XmlDocument doc;
-        XmlNode root;
+        XmlNode current;
         public TagBuilder(String rootTagName)
         {
             doc = new XmlDocument();
             doc.AppendChild(doc.CreateElement(rootTagName));
-            root = doc.FirstChild;
+            current = doc.FirstChild;
         }
 
         public String toXml()
@@ -27,9 +27,13 @@ namespace PatternOrientedRefactoring
 
         public void addChild(string childTagName)
         {
-//            TagNode parentNode = currentNode;
-//            currentNode = new TagNode(childTagName);
-//            parentNode.add(currentNode);
+            /// Create a new node.
+            XmlElement element = doc.CreateElement(childTagName);
+ //           element.InnerText = "";
+            
+            /// Add child
+            current.AppendChild(element);
+            current = current.LastChild;
         }
     }
 }
