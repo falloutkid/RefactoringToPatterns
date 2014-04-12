@@ -34,29 +34,21 @@ namespace PatternOrientedRefactoring
         public void addAbove(string tagName) { }
     }
 
-    public class AbstractBuilderTest
+    public abstract class AbstractBuilderTest
     {
+        protected OutputBuilder builder;
 
-    }
-
-    public class DOMBuilderTest:AbstractBuilderTest
-    {
-        private OutputBuilder builder;
-
-        private OutputBuilder createBuilder(string rootName)
-        {
-            return new DOMBuilder(rootName);
-        }
+        protected abstract OutputBuilder createBuilder(string rootName);
 
         public void testAddAboveRoot()
         {
-            String invalidResult =
-            "<orders>" +
-              "<order>" +
-              "</order>" +
-            "</orders>" +
-            "<customer>" +
-            "</customer>";
+            String invalidResult = 
+                "<orders>" +
+                  "<order>" + 
+                  "</order>" + 
+                "</orders>" + 
+                "<customer>" + 
+                "</customer>";
             builder = createBuilder("orders");
             builder.addBelow("order");
             try
@@ -68,38 +60,22 @@ namespace PatternOrientedRefactoring
             {
                 System.Diagnostics.Debug.WriteLine(ignored.Message.ToString());
             }
+        }
+    }
+
+    public class DOMBuilderTest:AbstractBuilderTest
+    {
+        protected override OutputBuilder createBuilder(string rootName)
+        {
+            return new DOMBuilder(rootName);
         }
     }
 
     public class XMLBuilderTest:AbstractBuilderTest
     {
-        private OutputBuilder builder;
-
-        private OutputBuilder createBuilder(string rootName)
+        protected override OutputBuilder createBuilder(string rootName)
         {
             return new XMLBuilder(rootName);
-        }
-
-        public void testAddAboveRoot()
-        {
-            String invalidResult =
-            "<orders>" +
-              "<order>" +
-              "</order>" +
-            "</orders>" +
-            "<customer>" +
-            "</customer>";
-            builder = createBuilder("orders");
-            builder.addBelow("order");
-            try
-            {
-                builder.addAbove("customer");
-                System.Diagnostics.Debug.Assert(false, "expecting Exception");
-            }
-            catch (Exception ignored)
-            {
-                System.Diagnostics.Debug.WriteLine(ignored.Message.ToString());
-            }
         }
     }
 }
