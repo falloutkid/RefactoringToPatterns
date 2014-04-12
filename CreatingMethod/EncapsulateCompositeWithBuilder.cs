@@ -13,11 +13,23 @@ namespace PatternOrientedRefactoring
     {
         private XmlDocument doc;
         XmlNode current;
+        private  int outputBufferSize;
+        const int TAG_CHARS_SIZE = 5;
+        const int ATTRRIBUTE_CHARS_SISE = 4;
+
         public TagBuilder(String rootTagName)
         {
             doc = new XmlDocument();
             doc.AppendChild(doc.CreateElement(rootTagName));
             current = doc.FirstChild;
+
+            outputBufferSize = 0;
+            incrementBufferSizeByTagLength(rootTagName);
+        }
+
+        private void incrementBufferSizeByTagLength(String tag_name)
+        {
+            outputBufferSize += tag_name.Length * 2 + TAG_CHARS_SIZE;
         }
 
         public String toXml()
@@ -34,6 +46,8 @@ namespace PatternOrientedRefactoring
             /// Add child
             current.AppendChild(element);
             current = current.LastChild;
+
+            incrementBufferSizeByTagLength(childTagName);
         }
 
         public void addSibling(string childTagName)
@@ -57,11 +71,13 @@ namespace PatternOrientedRefactoring
             current = doc.FirstChild.LastChild;
         }
 
-        public void addAttribute(string p1, string p2)
+        public void addAttribute(string name, string value)
         {
-            XmlAttribute attr = doc.CreateAttribute(p1);
-            attr.Value = p2;
+            XmlAttribute attr = doc.CreateAttribute(name);
+            attr.Value = value;
             current.Attributes.Append(attr);
+
+            outputBufferSize += name.Length + value.Length + ATTRRIBUTE_CHARS_SISE;
         }
 
         public void addToParent(string parent, string child)
@@ -85,9 +101,16 @@ namespace PatternOrientedRefactoring
             return null;
         }
 
-        public void addValue(string p)
+        public void addValue(string value)
         {
-            current.AppendChild(doc.CreateTextNode(p));
+            current.AppendChild(doc.CreateTextNode(value));
+
+            outputBufferSize += value.Length;
+        }
+
+        public int bufferSize()
+        {
+            return outputBufferSize;
         }
     }
 }

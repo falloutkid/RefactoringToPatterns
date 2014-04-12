@@ -126,5 +126,26 @@ namespace UnitTestProject
 
             Assert.AreEqual(expectedXml, builder.toXml());
         }
+
+        [TestMethod]
+        public void testToStringBufferSize()
+        {
+            String expected =
+            "<requirements>" +
+              "<requirement type=\"software\">" +
+                "IDE" +
+              "</requirement>" +
+            "</requirements>";
+
+            TagBuilder builder = new TagBuilder("requirements");
+            builder.addChild("requirement");
+            builder.addAttribute("type", "software");
+            builder.addValue("IDE");
+
+            int stringSize = builder.toXml().Length;
+            int computedSize = builder.bufferSize();
+            Assert.AreEqual(expected, builder.toXml());
+            Assert.AreEqual(stringSize, computedSize, "buffer size");
+        }
     }
 }
