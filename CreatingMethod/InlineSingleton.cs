@@ -6,7 +6,25 @@ using System.Threading.Tasks;
 
 namespace PatternOrientedRefactoring
 {
-    class InlineSingleton
+    class InclimentCounter
     {
+        InclimentCounter instance;
+        int count;
+
+        private InclimentCounter()
+        {
+            count = 0;
+        }
+        public InclimentCounter getInstance()
+        {
+            if (instance == null)
+                instance = new InclimentCounter();
+            return instance;
+        }
+        public int increment()
+        {
+            count++;
+            return count;
+        }
     }
 }
