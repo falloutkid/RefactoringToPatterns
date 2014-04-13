@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SampleCode;
 using PatternOrientedRefactoring;
+using System.Collections.Generic;
 
 using Moq;
 
@@ -35,7 +36,7 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void TestTagBuilerOneChild()
+        public void testTagBuilerOneChild()
         {
             String expectedXml = "<flavors>" + "<flavor />" + "</flavors>";
 
@@ -46,7 +47,7 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void TestTagBuilerChildren()
+        public void testTagBuilerChildren()
         {
             String expectedXml = "<flavors>" + "<flavor>" + "<requirements>" + "<requirement />" + "</requirements>" + "</flavor>" + "</flavors>";
 
@@ -146,6 +147,46 @@ namespace UnitTestProject
             int computedSize = builder.bufferSize();
             Assert.AreEqual(expected, builder.toXml());
             Assert.AreEqual(stringSize, computedSize, "buffer size");
+        }
+
+        [TestMethod]
+        public void testTwoSetsOfGreatGrandchildren()
+        {
+            string[] schema = new string[]{
+              "orders",
+              "\torder",
+              "\t\titem",
+              "\t\t\tapple",
+              "\t\t\torange"
+            };
+
+            String expected =
+              "<orders>" +
+                "<order>" +
+                  "<item>" +
+                    "<apple />" +
+                    "<orange />" +
+                  "</item>" +
+                  "<item>" +
+                    "<apple />" +
+                    "<orange />" +
+                  "</item>" +
+                "</order>" +
+              "</orders>";
+
+            TagBuilder builder = new TagBuilder("orders");
+
+            Dictionary<string, string> tree_schema = builder.makeTreeSchema(schema);
+            
+            builder.addToParent(tree_schema["order"],"order");
+            for (int i = 0; i < 2; i++)
+            {
+                builder.addToParent(tree_schema["item"], "item");
+                builder.addToParent(tree_schema["apple"], "apple");
+                builder.addToParent(tree_schema["orange"], "orange");
+            }
+            
+            Assert.AreEqual(expected, builder.toXml());
         }
     }
 }

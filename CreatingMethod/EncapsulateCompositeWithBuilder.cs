@@ -41,7 +41,6 @@ namespace PatternOrientedRefactoring
         {
             /// Create a new node.
             XmlElement element = doc.CreateElement(childTagName);
- //           element.InnerText = "";
             
             /// Add child
             current.AppendChild(element);
@@ -111,6 +110,30 @@ namespace PatternOrientedRefactoring
         public int bufferSize()
         {
             return outputBufferSize;
+        }
+
+        public Dictionary<string, string> makeTreeSchema(string[] schema)
+        {
+            Dictionary<string, string> schema_tree = new Dictionary<string, string>();
+            schema_tree.Add(doc.FirstChild.Name, null);
+            string[] parent = new string[10];
+            parent[0] = doc.FirstChild.Name;
+
+            foreach (string data in schema)
+            {
+                if (doc.FirstChild.Name != data)
+                {
+                    int level = data.Length - data.Replace("\t", "").Length;
+                    if (parent[level - 1] == null)
+                        continue;
+                    else
+                    {
+                        schema_tree.Add(data.Replace("\t", ""), parent[level - 1].ToString());
+                        parent[level] = data.Replace("\t", "");
+                    }
+                }
+            }
+            return schema_tree;
         }
     }
 }
