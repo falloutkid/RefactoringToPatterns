@@ -42,7 +42,7 @@ namespace PatternOrientedRefactoring
             /// Create a new node.
             XmlElement element = doc.CreateElement(childTagName);
             
-            /// Add child
+            /// Add element
             current.AppendChild(element);
             current = current.LastChild;
 
@@ -55,7 +55,7 @@ namespace PatternOrientedRefactoring
             XmlElement element = doc.CreateElement(childTagName);
             //           element.InnerText = "";
 
-            /// Add child
+            /// Add element
             current.ParentNode.AppendChild(element);
         }
 
@@ -65,7 +65,7 @@ namespace PatternOrientedRefactoring
             XmlElement element = doc.CreateElement(childTagName);
             //           element.InnerText = "";
 
-            /// Add child
+            /// Add element
             doc.FirstChild.AppendChild(element);
             current = doc.FirstChild.LastChild;
         }
