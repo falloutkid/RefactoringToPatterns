@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComposeMethodAbstract.cs" />
     <Compile Include="EncapsulateClassesWithFactory.cs" />
     <Compile Include="EncapsulateCompositeWithBuilder.cs" />
     <Compile Include="InlineSingleton.cs" />
