@@ -39,7 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComposeMethodAbstract.cs" />
+    <Compile Include="ReplaceConditionalLogic.cs" />
+    <Compile Include="ComposeMethod.cs" />
     <Compile Include="EncapsulateClassesWithFactory.cs" />
     <Compile Include="EncapsulateCompositeWithBuilder.cs" />
     <Compile Include="InlineSingleton.cs" />
