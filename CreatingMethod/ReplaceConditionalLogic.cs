@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace PatternOrientedRefactoring
 {
+    #region パラメータクラス
     public class Payment
     {
         public double amount { set; get; }
@@ -21,6 +22,35 @@ namespace PatternOrientedRefactoring
     public class LoanPaymentFactor
     {
         public LoanRiskFactor RiskFactor { set; get; }
+    }
+    #endregion
+
+    public class CaptitalStrategy
+    {
+        public double capital(LoanSimplification loan)
+        {
+            if (loan.Expiry == loan.InitDateTime && loan.Maturity != loan.InitDateTime)
+                return loan.Commitment * loan.duration() * riskFactor(loan);
+            if (loan.Expiry != loan.InitDateTime && loan.Maturity == loan.InitDateTime)
+            {
+                if (loan.getUnusedPercentage() != 1.0)
+                    return loan.Commitment * loan.getUnusedPercentage() * loan.duration() * riskFactor(loan);
+                else
+                    return (loan.outstandingRiskAmount() * loan.duration() * riskFactor(loan))
+                        + (loan.unusedRiskAmount() * loan.duration() * unusedRiskFactor(loan));
+            }
+            return 0.0;
+        }
+
+        private double unusedRiskFactor(LoanSimplification loan)
+        {
+            return loan.loanPaymentFactor.RiskFactor.UnRiskFactor;
+        }
+
+        private double riskFactor(LoanSimplification loan)
+        {
+            return loan.loanPaymentFactor.RiskFactor.RiskFactor;
+        }
     }
 
     public class LoanSimplification
@@ -38,7 +68,12 @@ namespace PatternOrientedRefactoring
         const double MILLIS_PER_DAY = 86400000.0;
         const double DAYS_PER_YEAR = 365.0;
 
-        private LoanPaymentFactor loanPaymentFactor;
+        public LoanPaymentFactor loanPaymentFactor{get;set;}
+
+        public DateTime Expiry { get { return expiry_; } }
+        public DateTime Maturity { get { return maturity_; } }
+        public DateTime InitDateTime { get { return initDateTime; } }
+        public double Commitment { get { return commitment_; } }
 
         public LoanSimplification()
         {
@@ -51,47 +86,22 @@ namespace PatternOrientedRefactoring
             start_ = DateTime.Today;
         }
 
-        public double capital()
-        {
-            if (expiry_ == initDateTime && maturity_ != initDateTime)
-                return commitment_ * duration() * riskFactor();
-            if (expiry_ != initDateTime && maturity_ == initDateTime)
-            {
-                if (getUnusedPercentage() != 1.0)
-                    return commitment_ * getUnusedPercentage() * duration() * riskFactor();
-                else
-                    return (outstandingRiskAmount() * duration() * riskFactor())
-                        + (unusedRiskAmount() * duration() * unusedRiskFactor());
-            }
-            return 0.0;
-        }
-
-        private double unusedRiskFactor()
-        {
-            return loanPaymentFactor.RiskFactor.UnRiskFactor;
-        }
-
-        private double riskFactor()
-        {
-            return loanPaymentFactor.RiskFactor.RiskFactor;
-        }
-
-        private double unusedRiskAmount()
+        public double unusedRiskAmount()
         {
             return (commitment_ - outstanding_);
         }
 
-        private double outstandingRiskAmount()
+        public double outstandingRiskAmount()
         {
             return outstanding_;
         }
 
-        private double getUnusedPercentage()
+        public double getUnusedPercentage()
         {
             throw new NotImplementedException();
         }
 
-        private double duration()
+        public double duration()
         {
             if (expiry_ == null && maturity_ != null)
                 return weightedAdverageDeration();
