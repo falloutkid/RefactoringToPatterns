@@ -27,17 +27,21 @@ namespace PatternOrientedRefactoring
 
     public class CaptitalStrategy
     {
+        readonly DateTime initDateTime = new DateTime(DateTime.MinValue.Ticks);
+        const double MILLIS_PER_DAY = 86400000.0;
+        const double DAYS_PER_YEAR = 365.0;
+
         public double capital(LoanSimplification loan)
         {
-            if (loan.Expiry == loan.InitDateTime && loan.Maturity != loan.InitDateTime)
-                return loan.Commitment * loan.duration() * riskFactor(loan);
-            if (loan.Expiry != loan.InitDateTime && loan.Maturity == loan.InitDateTime)
+            if (loan.Expiry == initDateTime && loan.Maturity != initDateTime)
+                return loan.Commitment * duration(loan) * riskFactor(loan);
+            if (loan.Expiry != initDateTime && loan.Maturity == initDateTime)
             {
                 if (loan.getUnusedPercentage() != 1.0)
-                    return loan.Commitment * loan.getUnusedPercentage() * loan.duration() * riskFactor(loan);
+                    return loan.Commitment * loan.getUnusedPercentage() * duration(loan) * riskFactor(loan);
                 else
-                    return (loan.outstandingRiskAmount() * loan.duration() * riskFactor(loan))
-                        + (loan.unusedRiskAmount() * loan.duration() * unusedRiskFactor(loan));
+                    return (loan.outstandingRiskAmount() * duration(loan) * riskFactor(loan))
+                        + (loan.unusedRiskAmount() * duration(loan) * unusedRiskFactor(loan));
             }
             return 0.0;
         }
@@ -50,6 +54,44 @@ namespace PatternOrientedRefactoring
         private double riskFactor(LoanSimplification loan)
         {
             return loan.loanPaymentFactor.RiskFactor.RiskFactor;
+        }
+
+        public double duration(LoanSimplification loan)
+        {
+            if ((loan.Expiry == initDateTime) && (loan.Maturity != initDateTime))
+                return weightedAdverageDeration(loan);
+            else if (loan.Expiry != null && loan.Maturity == null)
+                return yearTo(loan);
+            return 0.0;
+        }
+
+        private double yearTo(LoanSimplification loan)
+        {
+            return (getTime(loan.EndDate) - getTime(loan.StartTime)) / MILLIS_PER_DAY / DAYS_PER_YEAR;
+        }
+
+        private double getTime(DateTime time)
+        {
+            var ts = time - new DateTime(1970, 1, 1);
+            return ts.TotalMilliseconds;
+        }
+
+        private double weightedAdverageDeration(LoanSimplification loan)
+        {
+            double duration = 0.0;
+            double weightedAdverage = 0.0;
+            double sumOfPayments = 0.0;
+
+            foreach (Payment payment in loan.Payments)
+            {
+                sumOfPayments += payment.amount;
+                weightedAdverage += yearTo(loan) * payment.amount;
+            }
+
+            if (loan.Commitment != 0.0)
+                duration = weightedAdverage / sumOfPayments;
+
+            return duration;
         }
     }
 
@@ -64,16 +106,26 @@ namespace PatternOrientedRefactoring
         int riskRating_;
         List<Payment> payments_;
 
-        readonly DateTime initDateTime = new DateTime(DateTime.MinValue.Ticks);
-        const double MILLIS_PER_DAY = 86400000.0;
-        const double DAYS_PER_YEAR = 365.0;
-
         public LoanPaymentFactor loanPaymentFactor{get;set;}
 
         public DateTime Expiry { get { return expiry_; } }
         public DateTime Maturity { get { return maturity_; } }
-        public DateTime InitDateTime { get { return initDateTime; } }
+        public DateTime StartTime { get {return start_; } }
+        public DateTime EndDate { get { return endDate_; } }
         public double Commitment { get { return commitment_; } }
+        public List<Payment> Payments { get { return payments_; } }
+
+        private CaptitalStrategy capitalstrategy;
+
+        public double capital()
+        {
+            return capitalstrategy.capital(this);
+        }
+
+        public double duration()
+        {
+            return capitalstrategy.duration(this);
+        }
 
         public LoanSimplification()
         {
@@ -84,6 +136,8 @@ namespace PatternOrientedRefactoring
             riskRating_ = 0;
             payments_ = new List<Payment>();
             start_ = DateTime.Today;
+
+            capitalstrategy = new CaptitalStrategy();
         }
 
         public double unusedRiskAmount()
@@ -101,42 +155,6 @@ namespace PatternOrientedRefactoring
             throw new NotImplementedException();
         }
 
-        public double duration()
-        {
-            if (expiry_ == null && maturity_ != null)
-                return weightedAdverageDeration();
-            else if (expiry_ != null && maturity_ == null)
-                return yearTo(expiry_);
-            return 0.0;
-        }
-
-        private double yearTo(DateTime expiry_)
-        {
-            return (getTime(endDate_) - getTime(start_)) / MILLIS_PER_DAY / DAYS_PER_YEAR;
-        }
-
-        private double getTime(DateTime time)
-        {
-            var ts = time - new DateTime(1970, 1, 1);
-            return ts.TotalMilliseconds;
-        }
-
-        private double weightedAdverageDeration()
-        {
-            double duration = 0.0;
-            double weightedAdverage = 0.0;
-            double sumOfPayments = 0.0;
-
-            foreach(Payment payment in payments_)
-            {
-                sumOfPayments += payment.amount;
-                weightedAdverage += yearTo(payment.Date) * payment.amount;
-            }
-
-            if (commitment_ != 0.0)
-                duration = weightedAdverage / sumOfPayments;
-
-            return duration;
-        }
+        
     }
 }
