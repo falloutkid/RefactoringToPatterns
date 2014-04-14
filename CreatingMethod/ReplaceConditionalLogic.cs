@@ -25,47 +25,30 @@ namespace PatternOrientedRefactoring
     }
     #endregion
 
-    public class CaptitalStrategy
+    public abstract class CapitalStrategy
     {
         readonly DateTime initDateTime = new DateTime(DateTime.MinValue.Ticks);
         const double MILLIS_PER_DAY = 86400000.0;
         const double DAYS_PER_YEAR = 365.0;
 
-        public double capital(LoanSimplification loan)
-        {
-            if (loan.Expiry == initDateTime && loan.Maturity != initDateTime)
-                return loan.Commitment * duration(loan) * riskFactor(loan);
-            if (loan.Expiry != initDateTime && loan.Maturity == initDateTime)
-            {
-                if (loan.getUnusedPercentage() != 1.0)
-                    return loan.Commitment * loan.getUnusedPercentage() * duration(loan) * riskFactor(loan);
-                else
-                    return (loan.outstandingRiskAmount() * duration(loan) * riskFactor(loan))
-                        + (loan.unusedRiskAmount() * duration(loan) * unusedRiskFactor(loan));
-            }
-            return 0.0;
-        }
-
-        private double unusedRiskFactor(LoanSimplification loan)
+        public abstract double capital(LoanSimplification loan);
+        
+        public double unusedRiskFactor(LoanSimplification loan)
         {
             return loan.loanPaymentFactor.RiskFactor.UnRiskFactor;
         }
 
-        private double riskFactor(LoanSimplification loan)
+        public double riskFactor(LoanSimplification loan)
         {
             return loan.loanPaymentFactor.RiskFactor.RiskFactor;
         }
 
         public double duration(LoanSimplification loan)
         {
-            if ((loan.Expiry == initDateTime) && (loan.Maturity != initDateTime))
-                return weightedAdverageDeration(loan);
-            else if (loan.Expiry != null && loan.Maturity == null)
-                return yearTo(loan);
-            return 0.0;
+            return yearTo(loan);
         }
 
-        private double yearTo(LoanSimplification loan)
+        protected double yearTo(LoanSimplification loan)
         {
             return (getTime(loan.EndDate) - getTime(loan.StartTime)) / MILLIS_PER_DAY / DAYS_PER_YEAR;
         }
@@ -74,6 +57,19 @@ namespace PatternOrientedRefactoring
         {
             var ts = time - new DateTime(1970, 1, 1);
             return ts.TotalMilliseconds;
+        }
+    }
+
+    public class CapitalStrategyTermLoan:CapitalStrategy
+    {
+        public override double capital(LoanSimplification loan)
+        {
+            return loan.Commitment * duration(loan) * riskFactor(loan);
+        }
+
+        public new double duration(LoanSimplification loan)
+        {
+            return weightedAdverageDeration(loan);
         }
 
         private double weightedAdverageDeration(LoanSimplification loan)
@@ -92,6 +88,23 @@ namespace PatternOrientedRefactoring
                 duration = weightedAdverage / sumOfPayments;
 
             return duration;
+        }
+    }
+
+    public class CapitalStrategyRevolver : CapitalStrategy
+    {
+        public override double capital(LoanSimplification loan)
+        {
+            return loan.Commitment * loan.getUnusedPercentage() * duration(loan) * riskFactor(loan);
+        }
+    }
+    public class CapitalStrategyAdvisedLine : CapitalStrategy
+    {
+        public override double capital(LoanSimplification loan)
+        {
+
+            return (loan.outstandingRiskAmount() * duration(loan) * riskFactor(loan))
+                + (loan.unusedRiskAmount() * duration(loan) * unusedRiskFactor(loan));
         }
     }
 
@@ -115,19 +128,19 @@ namespace PatternOrientedRefactoring
         public double Commitment { get { return commitment_; } }
         public List<Payment> Payments { get { return payments_; } }
 
-        private CaptitalStrategy capitalstrategy;
+        private CapitalStrategy capitalstrategy_;
 
         public double capital()
         {
-            return capitalstrategy.capital(this);
+            return capitalstrategy_.capital(this);
         }
 
         public double duration()
         {
-            return capitalstrategy.duration(this);
+            return capitalstrategy_.duration(this);
         }
 
-        public LoanSimplification()
+        private LoanSimplification(CapitalStrategy capitalstrategy)
         {
             expiry_ = new DateTime(DateTime.MinValue.Ticks);
             maturity_ = new DateTime(DateTime.MinValue.Ticks);
@@ -137,7 +150,22 @@ namespace PatternOrientedRefactoring
             payments_ = new List<Payment>();
             start_ = DateTime.Today;
 
-            capitalstrategy = new CaptitalStrategy();
+            capitalstrategy_ = capitalstrategy;
+        }
+
+        public static LoanSimplification newRevolver()
+        {
+            return new LoanSimplification(new CapitalStrategyRevolver());
+        }
+
+        public static LoanSimplification newAdvicedLine()
+        {
+            return new LoanSimplification(new CapitalStrategyAdvisedLine());
+        }
+
+        public static LoanSimplification newTermLoan()
+        {
+            return new LoanSimplification(new CapitalStrategyTermLoan());
         }
 
         public double unusedRiskAmount()
@@ -153,8 +181,6 @@ namespace PatternOrientedRefactoring
         public double getUnusedPercentage()
         {
             throw new NotImplementedException();
-        }
-
-        
+        }  
     }
 }

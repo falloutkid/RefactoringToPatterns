@@ -8,7 +8,7 @@ namespace PatternOrientedRefactoring
 {
     public class Loan
     {
-        CaptalStrategy captalStrategy_;
+        CaptalStrategyIf captalStrategy_;
         double commitment_;
         double outstanding_;
         int riskRating_;
@@ -20,7 +20,7 @@ namespace PatternOrientedRefactoring
             return new Loan(null, commitment, 0.0, riskRating, maturity, new DateTime(DateTime.MinValue.Ticks));
         }
 
-        public static Loan createTermLoan(CaptalStrategy captalStrategy, double commitment, double outstanding, int riskRating, DateTime maturity)
+        public static Loan createTermLoan(CaptalStrategyIf captalStrategy, double commitment, double outstanding, int riskRating, DateTime maturity)
         {
             return new Loan(captalStrategy, commitment, outstanding, riskRating, maturity, new DateTime(DateTime.MinValue.Ticks));
         }
@@ -30,7 +30,7 @@ namespace PatternOrientedRefactoring
             return new Loan(null, commitment, outstanding, riskRating, new DateTime(DateTime.MinValue.Ticks), expiry);
         }
 
-        public static Loan createRevolver(CaptalStrategy captalStrategy, double commitment, double outstanding, int riskRating, DateTime expiry)
+        public static Loan createRevolver(CaptalStrategyIf captalStrategy, double commitment, double outstanding, int riskRating, DateTime expiry)
         {
             return new Loan(captalStrategy, commitment, outstanding, riskRating, new DateTime(DateTime.MinValue.Ticks), expiry);
         }
@@ -40,12 +40,12 @@ namespace PatternOrientedRefactoring
             return new Loan(null, commitment, outstanding, riskRating, maturity, expiry);
         }
 
-        public static Loan createRCTL(CaptalStrategy captalStrategy, double commitment, double outstanding, int riskRating, DateTime maturity, DateTime expiry)
+        public static Loan createRCTL(CaptalStrategyIf captalStrategy, double commitment, double outstanding, int riskRating, DateTime maturity, DateTime expiry)
         {
             return new Loan(captalStrategy, commitment, outstanding, riskRating, maturity, expiry);
         }
 
-        private Loan(CaptalStrategy captalStrategy, double commitment, double outstanding, int riskRating, DateTime maturity, DateTime expiry)
+        private Loan(CaptalStrategyIf captalStrategy, double commitment, double outstanding, int riskRating, DateTime maturity, DateTime expiry)
         {
             commitment_ = commitment;
             outstanding_ = outstanding;
@@ -68,11 +68,11 @@ namespace PatternOrientedRefactoring
         }
     }
 
-    public interface CaptalStrategy{
+    public interface CaptalStrategyIf{
 
     }
 
-    public class CaptalStrategyTermLoan : CaptalStrategy { }
-    public class CaptalStrategyRevolver : CaptalStrategy { }
-    public class CaptalStrategyRCTL : CaptalStrategy { }
+    public class CaptalStrategyTermLoan : CaptalStrategyIf { }
+    public class CaptalStrategyRevolver : CaptalStrategyIf { }
+    public class CaptalStrategyRCTL : CaptalStrategyIf { }
 }
