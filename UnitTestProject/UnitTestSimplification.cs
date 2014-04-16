@@ -22,7 +22,7 @@ namespace UnitTestProject
             String DECODED_WORKSHOP_TITLE =
             "The Testing & Refactoring Workshop";
 
-            Parser parser = Parser.createParser(ENCODED_WORKSHOP_TITLE);
+            Parser parser = Parser.createParser(ENCODED_WORKSHOP_TITLE, true);
             parser.setNodeDecoding(true);  // tell parser_ to decode StringNodes
 
             String decodedContent = parser.toPlainTextString();

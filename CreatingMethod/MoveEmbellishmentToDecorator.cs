@@ -60,15 +60,29 @@ namespace PatternOrientedRefactoringSimplification
 
         public void setNodeDecoding(bool p)
         {
-            foreach (Node node in nodes)
-                node.shouldDecode = p;
+            shouldDecode = p;
+        }
+
+        public static Parser createParser(string root_node_text, bool p)
+        {
+            if (parser_ == null)
+                parser_ = new Parser();
+            shouldDecode = p;
+            StringBuilder input = new StringBuilder();
+            input.Append(root_node_text);
+
+            Node root_node = string_parser.find(input, 0, root_node_text.Length, shouldDecode);
+
+            nodes.Add(root_node);
+
+            return parser_;
         }
     }
 
     public interface Node
     {
         string toPlainTextString();
-        bool shouldDecode { set; get; }
+        String NodeText { set; get; }
     }
 
     public class NodeFactory
@@ -78,15 +92,15 @@ namespace PatternOrientedRefactoringSimplification
         public Node createStringNode(StringBuilder textBuffer, int textBegin, int textEnd)
         {
             if (decodeStringNodes)
-                return new DecodingStringNode(new StringNode(textBuffer, textBegin, textEnd));
-            return new StringNode(textBuffer, textBegin, textEnd);
+                return new DecodingStringNode(textBuffer, textBegin, textEnd);
+            return StringNode.createStringNode(textBuffer, textBegin, textEnd);
         }
 
         public Node createStringNode(StringBuilder textBuffer, int textBegin, int textEnd, Boolean shouldDecode)
         {
             if (shouldDecode)
-                return new DecodingStringNode(new StringNode(textBuffer, textBegin, textEnd));
-            return new StringNode(textBuffer, textBegin, textEnd);
+                return new DecodingStringNode(textBuffer, textBegin, textEnd);
+            return StringNode.createStringNode(textBuffer, textBegin, textEnd);
         }
     }
 
@@ -103,14 +117,7 @@ namespace PatternOrientedRefactoringSimplification
             return parser.nodeFactory.createStringNode(textBuffer, textBegin, textEnd, parser.shouldDecodeNode);
         }
     }
-    class DecodingStringNode : Node
-    {
-        StringNode string_node_;
-        public bool shouldDecode { set; get; }
-        public DecodingStringNode(StringNode string_node) { string_node_ = string_node;}
-        public string toPlainTextString(){return string_node_.toPlainTextString();}
-    }
-    class StringNode : Node
+    class DecodingStringNode : StringNode
     {
         Dictionary<string, string> replace_list = new Dictionary<string, string>(){
         {"&amp;","&"},
@@ -118,32 +125,39 @@ namespace PatternOrientedRefactoringSimplification
         {"&lt;","<"},
         {"&rt;",">"},
         };
-        StringBuilder string_builder;
-        public bool shouldDecode{set;get;}
-        public bool ShouldRemoveEscapeCharactor { set; get; }
 
-        public StringNode(StringBuilder textBuffer, int textBegin, int textEnd)
-        {
-            string_builder = textBuffer;
-            shouldDecode = false;
-        }
-
-        public StringNode(StringBuilder textBuffer, int textBegin, int textEnd, bool decode)
-        {
-            string_builder = textBuffer;
-            shouldDecode = decode;
-        }
-
-        public string toPlainTextString()
+        public DecodingStringNode(StringBuilder textBuffer, int textBegin, int textEnd):base(textBuffer,  textBegin,  textEnd) {  }
+        public override string toPlainTextString()
         {
             String result = string_builder.ToString();
-            if (shouldDecode)
-            {
-                StringBuilder temporary = string_builder;
-                foreach (string key in replace_list.Keys)
-                    temporary.Replace(key, replace_list[key]);
-                result = temporary.ToString();
-            }
+            StringBuilder temporary = string_builder;
+            foreach (string key in replace_list.Keys)
+                temporary.Replace(key, replace_list[key]);
+            result = temporary.ToString();
+
+            return result;
+        }
+    }
+    class StringNode : Node
+    {
+        protected StringBuilder string_builder;
+        public bool ShouldRemoveEscapeCharactor { set; get; }
+        public String NodeText { set; get; }
+
+        protected StringNode(StringBuilder textBuffer, int textBegin, int textEnd)
+        {
+            string_builder = textBuffer;
+        }
+
+        public static StringNode createStringNode(StringBuilder textBuffer, int textBegin, int textEnd)
+        {
+            return new StringNode(textBuffer, textBegin, textEnd);
+        }
+
+        public virtual string toPlainTextString()
+        {
+            String result = string_builder.ToString();
+
             if(ShouldRemoveEscapeCharactor)
             {
                 StringBuilder temporary = string_builder;
