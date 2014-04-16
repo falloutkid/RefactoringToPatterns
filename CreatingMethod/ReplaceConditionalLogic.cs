@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PatternOrientedRefactoring
+namespace PatternOrientedRefactoringSimplification
 {
     #region パラメータクラス
     public class Payment
