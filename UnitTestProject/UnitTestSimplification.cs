@@ -30,4 +30,32 @@ namespace UnitTestProject
             Assert.AreEqual(DECODED_WORKSHOP_TITLE, decodedContent.ToString());
         }
     }
+    [TestClass]
+    public class UnitTestReplaceState
+    {
+        private SystemPermission permission;
+        private SystemProfile profile;
+        private SystemUser user;
+        private SystemAdmin admin;
+
+        [TestInitialize]
+        public void setUp()
+        {
+            permission = new SystemPermission(user, profile);
+            admin = new SystemAdmin();
+            permission.Admin = admin;
+        }
+
+        [TestMethod]
+        public void testGrantedBy()
+        {
+            permission.grantedBy(admin);
+            Assert.AreEqual(permission.REQUESTED, permission.State, "requested");
+            Assert.AreEqual(false, permission.IsGranted, "not granted");
+            permission.claimedBy(admin);
+            permission.grantedBy(admin);
+            Assert.AreEqual(permission.GRANTED, permission.State, "granted");
+            Assert.AreEqual(true, permission.IsGranted, "granted");
+        }
+    }
 }

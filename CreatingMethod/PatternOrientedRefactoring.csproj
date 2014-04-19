@@ -52,6 +52,7 @@
     <Compile Include="ReplaceConstructorsWithCreationMethods.cs" />
     <Compile Include="MoveCreativeKnowkedgeToFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReplaceState_AlteringConditionalsWithState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
