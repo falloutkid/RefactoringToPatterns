@@ -64,8 +64,6 @@ namespace PatternOrientedRefactoringSimplification
 
         private void writeProductsTo(StringBuilder xml, Order order)
         {
-
-
             foreach (Product product in order.ProductList)
             {
                 xml.Append("<product");
@@ -100,15 +98,18 @@ namespace PatternOrientedRefactoringSimplification
 
         private void writePriceTo(StringBuilder xml, Product product)
         {
-            xml.Append("<price");
-            xml.Append(" currency='");
-            xml.Append(currencyFor(product));
-            xml.Append("'>");
-            xml.Append(product.Price);
-            xml.Append("</price>");
+            TagNode priceNode = new TagNode("price");
+            priceNode.addAttribute("currency", currencyFor(product));
+            priceNode.addValue(priceFor(product));
+            xml.Append(priceNode.toString());
         }
 
-        private char[] currencyFor(Product product)
+        private string priceFor(Product product)
+        {
+            throw new NotImplementedException();
+        }
+
+        private string currencyFor(Product product)
         {
             throw new NotImplementedException();
         }
