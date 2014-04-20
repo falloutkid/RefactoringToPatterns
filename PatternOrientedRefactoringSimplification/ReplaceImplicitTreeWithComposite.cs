@@ -49,20 +49,18 @@ namespace PatternOrientedRefactoringSimplification
 
         private void writeOrderTo(StringBuilder xml)
         {
-            xml.Append("<orders>");
+            TagNode ordersTag = new TagNode("orders");
             foreach (Order order in orders.OrderList)
             {
-                xml.Append("<order");
-                xml.Append(" id='");
-                xml.Append(order.OrderId);
-                xml.Append("'>");
-                writeProductsTo(xml, order);
-                xml.Append("</order>");
+                TagNode orderTag = new TagNode("order");
+                orderTag.addAttribute("id", order.OrderId);
+                writeProductsTo(orderTag, order);
+                ordersTag.add(orderTag);
             }
-            xml.Append("</orders>");
+            xml.Append(ordersTag.toString());
         }
 
-        private void writeProductsTo(StringBuilder xml, Order order)
+        private void writeProductsTo(TagNode orderTag, Order order)
         {
             foreach (Product product in order.ProductList)
             {
@@ -73,7 +71,7 @@ namespace PatternOrientedRefactoringSimplification
                     productTag.addAttribute("size", sizeFor(product));
                 writePriceTo(productTag, product);
                 productTag.addValue(product.Name);
-                xml.Append(productTag.toString());
+                orderTag.add(productTag);
             }
         }
 
