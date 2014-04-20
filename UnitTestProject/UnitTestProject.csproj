@@ -67,6 +67,10 @@
       <Project>{92f6a5e8-b4b4-464f-8100-ebabf097be69}</Project>
       <Name>PatternOrientedRefactoring</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PatternOrientedRefactoringSimplification\PatternOrientedRefactoringSimplification.csproj">
+      <Project>{726aeb47-4334-4182-993f-410b84dd8a0f}</Project>
+      <Name>PatternOrientedRefactoringSimplification</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SampleCode\SampleCode.csproj">
       <Project>{b867f9fa-7227-4414-b409-27aef2c59d3b}</Project>
       <Name>SampleCode</Name>

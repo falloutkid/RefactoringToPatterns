@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{92F6A5E8-B4B4-464F-8100-EBABF097BE69}</ProjectGuid>
+    <ProjectGuid>{726AEB47-4334-4182-993F-410B84DD8A0F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PatternOrientedRefactoring</RootNamespace>
-    <AssemblyName>PatternOrientedRefactoring</AssemblyName>
+    <RootNamespace>PatternOrientedRefactoringSimplification</RootNamespace>
+    <AssemblyName>PatternOrientedRefactoringSimplification</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,16 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EncapsulateClassesWithFactory.cs" />
-    <Compile Include="EncapsulateCompositeWithBuilder.cs" />
-    <Compile Include="InlineSingleton.cs" />
-    <Compile Include="IntroducePolymorphicCreation.cs" />
-    <Compile Include="ReplaceConstructorsWithCreationMethods.cs" />
-    <Compile Include="MoveCreativeKnowkedgeToFactory.cs" />
+    <Compile Include="ComposeMethod.cs" />
+    <Compile Include="MoveEmbellishmentToDecorator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <Compile Include="ReplaceConditionalLogic.cs" />
+    <Compile Include="ReplaceImplicitTreeWithComposite.cs" />
+    <Compile Include="ReplaceState_AlteringConditionalsWithState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
