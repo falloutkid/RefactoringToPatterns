@@ -18,18 +18,18 @@ namespace PatternOrientedRefactoringSimplification
     }
     public class SystemUser { }
 
-    public class PermissionState
+    public abstract class PermissionState
     {
-        private String name;
+        protected String name;
 
-        public static readonly PermissionState REQUESTED = new PermissionState("REQUESTED");
-        public static readonly PermissionState CLAIMED = new PermissionState("CLAIMED");
-        public static readonly PermissionState GRANTED = new PermissionState("GRANTED");
-        public static readonly PermissionState DENIED = new PermissionState("DENIED");
-        public static readonly PermissionState UNIX_REQUESTED = new PermissionState("UNIX_REQUESTED");
-        public static readonly PermissionState UNIX_CLAIMED = new PermissionState("UNIX_CLAIMED");
+        public static readonly PermissionState REQUESTED = new PermissionRrequest();
+        public static readonly PermissionState CLAIMED = new PermissionClaimed();
+        public static readonly PermissionState GRANTED = new PermissionGranted();
+        public static readonly PermissionState DENIED = new PermissionDenied();
+        public static readonly PermissionState UNIX_REQUESTED = new PermissionUnix_Requested();
+        public static readonly PermissionState UNIX_CLAIMED = new PermissionUnix_Claimed();
 
-        private PermissionState(String name)
+        protected PermissionState(String name)
         {
             this.name = name;
         }
@@ -38,6 +38,31 @@ namespace PatternOrientedRefactoringSimplification
         {
             return name;
         }
+    }
+
+    class PermissionRrequest:PermissionState
+    {
+        public PermissionRrequest() : base("REQUESTED") { }
+    }
+    class PermissionClaimed : PermissionState
+    {
+        public PermissionClaimed() : base("CLAIMED") { }
+    }
+    class PermissionGranted : PermissionState
+    {
+        public PermissionGranted() : base("GRANTED") { }
+    }
+    class PermissionDenied : PermissionState
+    {
+        public PermissionDenied() : base("DENIED") { }
+    }
+    class PermissionUnix_Requested : PermissionState
+    {
+        public PermissionUnix_Requested() : base("UNIX_REQUESTED") { }
+    }
+    class PermissionUnix_Claimed : PermissionState
+    {
+        public PermissionUnix_Claimed() : base("UNIX_CLAIMED") { }
     }
 
     public class SystemPermission
