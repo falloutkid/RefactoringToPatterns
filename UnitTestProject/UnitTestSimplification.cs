@@ -58,4 +58,25 @@ namespace UnitTestProject
             Assert.AreEqual(true, permission.IsGranted, "granted");
         }
     }
+    [TestClass]
+    public class TagTests
+    {
+        private static String SAMPLE_PRICE = "8.95";
+
+        [TestMethod]
+        public void testSimpleTagWithOneAttributeAndValue()
+        {
+            TagNode priceTag = new TagNode("price");
+            priceTag.addAttribute("currency", "USD");
+            priceTag.addValue(SAMPLE_PRICE);
+            String expected =
+              "<price currency=" +
+              "'" +
+              "USD" +
+              "'>" +
+              SAMPLE_PRICE +
+              "</price>";
+            Assert.AreEqual(expected, priceTag.toString(), "price XML");
+        }
+    }
 }
