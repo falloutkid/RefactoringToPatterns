@@ -50,11 +50,11 @@ namespace UnitTestProject
         public void testGrantedBy()
         {
             permission.grantedBy(admin);
-            Assert.AreEqual(permission.REQUESTED, permission.State, "requested");
+            Assert.AreEqual(PermissionState.REQUESTED, permission.PermissionState, "requested");
             Assert.AreEqual(false, permission.IsGranted, "not granted");
             permission.claimedBy(admin);
             permission.grantedBy(admin);
-            Assert.AreEqual(permission.GRANTED, permission.State, "granted");
+            Assert.AreEqual(PermissionState.GRANTED, permission.PermissionState, "granted");
             Assert.AreEqual(true, permission.IsGranted, "granted");
         }
     }

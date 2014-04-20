@@ -18,25 +18,40 @@ namespace PatternOrientedRefactoringSimplification
     }
     public class SystemUser { }
 
+    public class PermissionState
+    {
+        private String name;
+
+        public static readonly PermissionState REQUESTED = new PermissionState("REQUESTED");
+        public static readonly PermissionState CLAIMED = new PermissionState("CLAIMED");
+        public static readonly PermissionState GRANTED = new PermissionState("GRANTED");
+        public static readonly PermissionState DENIED = new PermissionState("DENIED");
+        public static readonly PermissionState UNIX_REQUESTED = new PermissionState("UNIX_REQUESTED");
+        public static readonly PermissionState UNIX_CLAIMED = new PermissionState("UNIX_CLAIMED");
+
+        private PermissionState(String name)
+        {
+            this.name = name;
+        }
+
+        public String toString()
+        {
+            return name;
+        }
+    }
+
     public class SystemPermission
     {
         private SystemProfile profile;
         private SystemUser requestor;
         private SystemAdmin admin;
         private Boolean isGranted;
-        private String state;
+        private PermissionState permission_state;
         private Boolean isUnixPermissionGranted;
 
         public Boolean IsUnixPermissionGranted { get { return isUnixPermissionGranted; } }
 
-        public readonly String REQUESTED = "REQUESTED";
-        public readonly String CLAIMED = "CLAIMED";
-        public readonly String GRANTED = "GRANTED";
-        public readonly String DENIED = "DENIED";
-        public readonly String UNIX_REQUESTED = "UNIX_REQUESTED";
-        public readonly String UNIX_CLAIMED = "UNIX_CLAIMED";
-
-        public string State { get { return state; } }
+        public PermissionState PermissionState { get { return permission_state; } }
         public Boolean IsGranted { get { return isGranted; } }
         public SystemAdmin Admin { set { admin = value; } get { return admin; } }
 
@@ -44,32 +59,37 @@ namespace PatternOrientedRefactoringSimplification
         {
             this.requestor = requestor;
             this.profile = profile;
-            state = REQUESTED;
+            setPermissionState(PermissionState.REQUESTED);
             isGranted = false;
             isUnixPermissionGranted = false;
             notifyAdminOfPermissionRequest();
         }
 
+        private void setPermissionState(PermissionState state)
+        {
+            permission_state = state;
+        }
+
         public void claimedBy(SystemAdmin admin)
         {
-            if (!state.Equals(REQUESTED) && !state.Equals(UNIX_REQUESTED))
+            if (!permission_state.Equals(PermissionState.REQUESTED) && !permission_state.Equals(PermissionState.UNIX_REQUESTED))
                 return;
             willBeHandledBy(admin);
-            if (state.Equals(REQUESTED))
-                state = CLAIMED;
-            else if (state.Equals(UNIX_REQUESTED))
-                state = UNIX_CLAIMED;
+            if (permission_state.Equals(PermissionState.REQUESTED))
+                setPermissionState(PermissionState.CLAIMED);
+            else if (permission_state.Equals(PermissionState.UNIX_REQUESTED))
+                setPermissionState(PermissionState.UNIX_CLAIMED);
         }
 
         public void deniedBy(SystemAdmin admin)
         {
-            if (!state.Equals(CLAIMED) && !state.Equals(UNIX_CLAIMED))
+            if (!permission_state.Equals(PermissionState.CLAIMED) && !permission_state.Equals(PermissionState.UNIX_CLAIMED))
                 return;
             if (!this.admin.Equals(admin))
                 return;
             isGranted = false;
             isUnixPermissionGranted = false;
-            state = DENIED;
+            setPermissionState(PermissionState.DENIED);
             notifyUserOfPermissionRequestResult();
         }
 
@@ -84,23 +104,23 @@ namespace PatternOrientedRefactoringSimplification
                 isUnixPermissionGranted = true;
             else if (profile.IsUnixPermissionRequired && !IsUnixPermissionGranted)
             {
-                state = UNIX_REQUESTED;
+                setPermissionState(PermissionState.UNIX_REQUESTED);
                 notifyUnixAdminsOfPermissionRequest();
                 return;
             }
-            state = GRANTED;
+            setPermissionState(PermissionState.GRANTED);
             isGranted = true;
             notifyUserOfPermissionRequestResult();
         }
 
         private bool isInClaimedState()
         {
-            return state.Equals(CLAIMED) || state.Equals(UNIX_CLAIMED);
+            return permission_state.Equals(PermissionState.CLAIMED) || permission_state.Equals(PermissionState.UNIX_CLAIMED);
         }
 
         private bool isUnixPermissionRequestedAndClaimed()
         {
-            return profile.IsUnixPermissionRequired && state.Equals(UNIX_CLAIMED);
+            return profile.IsUnixPermissionRequired && permission_state.Equals(PermissionState.UNIX_CLAIMED);
         }
 
         void notifyAdminOfPermissionRequest() { }
