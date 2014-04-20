@@ -40,61 +40,37 @@ namespace PatternOrientedRefactoringSimplification
             return name;
         }
 
-        public void claimedBy(SystemAdmin admin, SystemPermission system_permission)
-        {
-            if (!system_permission.PermissionState.Equals(PermissionState.REQUESTED) && !system_permission.PermissionState.Equals(PermissionState.UNIX_REQUESTED))
-                return;
-            willBeHandledBy(admin);
-            if (system_permission.PermissionState.Equals(PermissionState.REQUESTED))
-                system_permission.setPermissionState(PermissionState.CLAIMED);
-            else if (system_permission.PermissionState.Equals(PermissionState.UNIX_REQUESTED))
-                system_permission.setPermissionState(PermissionState.UNIX_CLAIMED);
-        }
+        public virtual void claimedBy(SystemAdmin admin, SystemPermission system_permission) { }
 
-        public void deniedBy(SystemAdmin admin, SystemPermission system_permission)
-        {
-            if (!system_permission.PermissionState.Equals(PermissionState.CLAIMED) && !system_permission.PermissionState.Equals(PermissionState.UNIX_CLAIMED))
-                return;
-            if (!admin.Equals(admin))
-                return;
-            system_permission.IsGranted = false;
-            system_permission.IsUnixPermissionGranted = false;
-            system_permission.setPermissionState(PermissionState.DENIED);
-            notifyUserOfPermissionRequestResult();
-        }
+        public virtual void deniedBy(SystemAdmin admin, SystemPermission system_permission){}
 
-        public void grantedBy(SystemAdmin admin, SystemPermission system_permission)
-        {
-            if (!system_permission.isInClaimedState())
-                return;
-            if (!admin.Equals(admin))
-                return;
+        public virtual void grantedBy(SystemAdmin admin, SystemPermission system_permission){}
 
-            if (system_permission.isUnixPermissionRequestedAndClaimed())
-                system_permission.IsUnixPermissionGranted = true;
-            else if (system_permission.Profile.IsUnixPermissionRequired && !system_permission.IsUnixPermissionGranted)
-            {
-                system_permission.setPermissionState(PermissionState.UNIX_REQUESTED);
-                notifyUnixAdminsOfPermissionRequest();
-                return;
-            }
-            system_permission.setPermissionState(PermissionState.GRANTED);
-            system_permission.IsGranted = true;
-            notifyUserOfPermissionRequestResult();
-        }
-
-        void willBeHandledBy(SystemAdmin admin) { }
-        void notifyUserOfPermissionRequestResult() { }
-        void notifyUnixAdminsOfPermissionRequest() { }
+        protected void willBeHandledBy(SystemAdmin admin) { }
+        protected void notifyUserOfPermissionRequestResult() { }
+        protected void notifyUnixAdminsOfPermissionRequest() { }
     }
 
     class PermissionRrequest:PermissionState
     {
         public PermissionRrequest() : base("REQUESTED") { }
+
+        public override void claimedBy(SystemAdmin admin, SystemPermission system_permission)
+        {
+            willBeHandledBy(admin);
+            system_permission.setPermissionState(PermissionState.CLAIMED);
+        }
+
     }
     class PermissionClaimed : PermissionState
     {
         public PermissionClaimed() : base("CLAIMED") { }
+        public override void grantedBy(SystemAdmin admin, SystemPermission system_permission)
+        {
+
+            system_permission.setPermissionState(PermissionState.UNIX_REQUESTED);
+            notifyUnixAdminsOfPermissionRequest();
+        }
     }
     class PermissionGranted : PermissionState
     {
@@ -107,10 +83,34 @@ namespace PatternOrientedRefactoringSimplification
     class PermissionUnix_Requested : PermissionState
     {
         public PermissionUnix_Requested() : base("UNIX_REQUESTED") { }
+        public override void claimedBy(SystemAdmin admin, SystemPermission system_permission)
+        {
+            willBeHandledBy(admin);
+            system_permission.setPermissionState(PermissionState.UNIX_CLAIMED);
+        }
+
     }
     class PermissionUnix_Claimed : PermissionState
     {
         public PermissionUnix_Claimed() : base("UNIX_CLAIMED") { }
+        public override void deniedBy(SystemAdmin admin, SystemPermission system_permission)
+        {
+            system_permission.IsGranted = false;
+            system_permission.IsUnixPermissionGranted = false;
+            system_permission.setPermissionState(PermissionState.DENIED);
+            notifyUserOfPermissionRequestResult();
+        }
+        public override void grantedBy(SystemAdmin admin, SystemPermission system_permission)
+        {
+            if (!admin.Equals(admin))
+                return;
+
+            if (system_permission.Profile.IsUnixPermissionRequired)
+                system_permission.IsUnixPermissionGranted = true;
+            system_permission.setPermissionState(PermissionState.GRANTED);
+            system_permission.IsGranted = true;
+            notifyUserOfPermissionRequestResult();
+        }
     }
     #endregion
 
