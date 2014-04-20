@@ -41,7 +41,7 @@ namespace UnitTestProject
         [TestInitialize]
         public void setUp()
         {
-            permission = new SystemPermission(user, profile);
+            permission = new SystemPermission(user, new SystemProfile());
             admin = new SystemAdmin();
             permission.Admin = admin;
         }
