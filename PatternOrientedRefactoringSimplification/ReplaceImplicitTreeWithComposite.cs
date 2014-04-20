@@ -121,11 +121,14 @@ namespace PatternOrientedRefactoringSimplification
         private String value = "";
         private StringBuilder attributes;
 
+        private List<TagNode> children;
+
         public TagNode(String name)
         {
             this.name = name;
             attributes = new StringBuilder();
             attributes.Clear();
+            children = new List<TagNode>();
         }
 
         public void addAttribute(String attribute, String value)
@@ -145,11 +148,21 @@ namespace PatternOrientedRefactoringSimplification
         public String toString()
         {
             String result;
-            result =
-              "<" + name + attributes + ">" +
-              value +
-              "</" + name + ">";
+            result = "<" + name + attributes + ">";
+
+            foreach(TagNode node in children)
+            {
+                result += node.toString();
+            }
+
+            result += value;
+            result += "</" + name + ">";
             return result;
+        }
+
+        public void add(TagNode tagNode)
+        {
+            children.Add(tagNode);
         }
     }
 }

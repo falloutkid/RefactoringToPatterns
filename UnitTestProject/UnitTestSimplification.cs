@@ -78,5 +78,18 @@ namespace UnitTestProject
               "</price>";
             Assert.AreEqual(expected, priceTag.toString(), "price XML");
         }
+
+        [TestMethod]
+        public void testCompositeTagOneChild()
+        {
+            TagNode productTag = new TagNode("product");
+            productTag.add(new TagNode("price"));
+            String expected =
+              "<product>" +
+                "<price>" +
+                "</price>" +
+              "</product>";
+            Assert.AreEqual(expected, productTag.toString(), "price XML");
+        }
     }
 }
