@@ -91,5 +91,23 @@ namespace UnitTestProject
               "</product>";
             Assert.AreEqual(expected, productTag.toString(), "price XML");
         }
+
+        [TestMethod]
+        public void testAddingChildrenAndGrandchildren()
+        {
+            String expected =
+            "<orders>" +
+              "<order>" +
+                 "<product>" +
+                 "</product>" +
+              "</order>" +
+            "</orders>";
+            TagNode ordersTag = new TagNode("orders");
+            TagNode orderTag = new TagNode("order");
+            TagNode productTag = new TagNode("product");
+            ordersTag.add(orderTag);
+            orderTag.add(productTag);
+            Assert.AreEqual(expected, ordersTag.toString(), "price XML");
+        } 
     }
 }
