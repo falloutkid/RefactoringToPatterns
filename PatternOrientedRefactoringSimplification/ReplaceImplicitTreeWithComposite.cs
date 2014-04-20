@@ -66,24 +66,23 @@ namespace PatternOrientedRefactoringSimplification
         {
             foreach (Product product in order.ProductList)
             {
-                xml.Append("<product");
-                xml.Append(" id='");
-                xml.Append(product.ID);
-                xml.Append("'");
-                xml.Append(" color='");
-                xml.Append(colorFor(product));
-                xml.Append("'");
+                TagNode productTag = new TagNode("product");
+                productTag.addAttribute("id", product.ID);
+                productTag.addAttribute("color", colorFor(product));
                 if (product.Size != ProductSize.NOT_APPLICABLE)
-                {
-                    xml.Append(" size='");
-                    xml.Append(sizeFor(product));
-                    xml.Append("'");
-                }
-                xml.Append(">");
-                writePriceTo(xml, product);
-                xml.Append(product.Name);
-                xml.Append("</product>");
+                    productTag.addAttribute("size", sizeFor(product));
+                writePriceTo(productTag, product);
+                productTag.addValue(product.Name);
+                xml.Append(productTag.toString());
             }
+        }
+
+        private void writePriceTo(TagNode productTag, Product product)
+        {
+            TagNode priceTag = new TagNode("price");
+            priceTag.addAttribute("currency", currencyFor(product));
+            priceTag.addValue(priceFor(product));
+            productTag.add(priceTag);
         }
 
         private string sizeFor(Product product)
