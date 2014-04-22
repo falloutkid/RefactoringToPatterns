@@ -90,7 +90,7 @@ namespace PatternOrientedRefactoringSimplification
     {
         public readonly string NEW_WORKSHOP = "NEW_WORKSHOP";
         public readonly string ALL_WORKSHOPS = "ALL_WORKSHOPS";
-        public readonly string ALL_WORKSHOPS_STYLESHEET = "ALL_WORKSHOPS_STYLESHEET";
+        
 
         WorkshopManager workshopManager;
         public WorkshopManager WorkshopManager { get { return workshopManager; } }
@@ -108,15 +108,31 @@ namespace PatternOrientedRefactoringSimplification
             }
             else if (actionName.Equals(ALL_WORKSHOPS))
             {
-                return getAllWorkshopsResponse();
+                return new AllWorkshopsResponse(this).getAllWorkshopsResponse();
             }
             return null;
         }
+    }
 
-        private HandlerResponse getAllWorkshopsResponse()
+    public class AllWorkshopsResponse
+    {
+        private CatalogApp catalogApp;
+        private readonly string ALL_WORKSHOPS_STYLESHEET = "ALL_WORKSHOPS_STYLESHEET";
+        public AllWorkshopsResponse(CatalogApp catalogApp)
+        {
+            this.catalogApp = catalogApp;
+        }
+
+        public HandlerResponse getAllWorkshopsResponse()
+        {
+            String formattedXml = prettyPrinter();
+            return new HandlerResponse(new StringBuilder(formattedXml), ALL_WORKSHOPS_STYLESHEET);
+        }
+
+        private string prettyPrinter()
         {
             XMLBuilder allWorkshopsXml = new XMLBuilder("workshops");
-            WorkshopRepository repository = workshopManager.getWorkshopRepository();
+            WorkshopRepository repository = workshopManager().getWorkshopRepository();
 
             foreach (string id in repository.Workshop.Keys)
             {
@@ -128,12 +144,16 @@ namespace PatternOrientedRefactoringSimplification
                 allWorkshopsXml.addAttribute("duration", workshop.getDurationAsString());
             }
             String formattedXml = getFormattedData(allWorkshopsXml.ToString());
-            return new HandlerResponse(new StringBuilder(formattedXml), ALL_WORKSHOPS_STYLESHEET);
+            return formattedXml;
         }
 
         private string getFormattedData(string p)
         {
             throw new NotImplementedException();
+        }
+        private WorkshopManager workshopManager()
+        {
+            return catalogApp.WorkshopManager;
         }
     }
 
@@ -146,16 +166,22 @@ namespace PatternOrientedRefactoringSimplification
         }
         public HandlerResponse getNewWorkshopResponse(Dictionary<string, string> parameters)
         {
-            String nextWorkshopID = workshopManager().NextWorkshopID;
-            StringBuilder newWorkshopContents =
-              workshopManager().createNewFileFromTemplate(
-                nextWorkshopID,
-                workshopManager().WorkshopDir,
-                workshopManager().WorkshopTemplate
-              );
-            workshopManager().addWorkshop(newWorkshopContents);
-            parameters.Add("id", nextWorkshopID);
+            createNewWorkshop(parameters);
             return catalogApp.executeActionAndGetResponse(catalogApp.ALL_WORKSHOPS, parameters);
+        }
+
+        private void createNewWorkshop(Dictionary<string, string> parameters)
+        {
+            String nextWorkshopID = workshopManager().NextWorkshopID;
+            workshopManager().addWorkshop(newWorkshopContents(nextWorkshopID));
+            parameters.Add("id", nextWorkshopID);
+        }
+
+        private StringBuilder newWorkshopContents(String nextWorkshopID)
+        {
+            StringBuilder newWorkshopContents = 
+                workshopManager().createNewFileFromTemplate(nextWorkshopID, workshopManager().WorkshopDir, workshopManager().WorkshopTemplate);
+            return newWorkshopContents;
         }
 
         private WorkshopManager workshopManager()
