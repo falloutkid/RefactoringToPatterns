@@ -102,16 +102,7 @@ namespace PatternOrientedRefactoringSimplification
         {
             if (actionName.Equals(NEW_WORKSHOP))
             {
-                String nextWorkshopID = workshopManager.NextWorkshopID;
-                StringBuilder newWorkshopContents =
-                  workshopManager.createNewFileFromTemplate(
-                    nextWorkshopID,
-                    workshopManager.WorkshopDir,
-                    workshopManager.WorkshopTemplate
-                  );
-                workshopManager.addWorkshop(newWorkshopContents);
-                parameters.Add("id", nextWorkshopID);
-                return executeActionAndGetResponse(ALL_WORKSHOPS, parameters);
+                return getNewWorkshopResponse(parameters);
             }
             else if (actionName.Equals(ALL_WORKSHOPS))
             {
@@ -131,6 +122,20 @@ namespace PatternOrientedRefactoringSimplification
                 return new HandlerResponse(new StringBuilder(formattedXml), ALL_WORKSHOPS_STYLESHEET);
             }
             return null;
+        }
+
+        private HandlerResponse getNewWorkshopResponse(Dictionary<string, string> parameters)
+        {
+            String nextWorkshopID = workshopManager.NextWorkshopID;
+            StringBuilder newWorkshopContents =
+              workshopManager.createNewFileFromTemplate(
+                nextWorkshopID,
+                workshopManager.WorkshopDir,
+                workshopManager.WorkshopTemplate
+              );
+            workshopManager.addWorkshop(newWorkshopContents);
+            parameters.Add("id", nextWorkshopID);
+            return executeActionAndGetResponse(ALL_WORKSHOPS, parameters);
         }
 
         private string getFormattedData(string p)
