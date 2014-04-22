@@ -123,15 +123,18 @@ namespace PatternOrientedRefactoringSimplification
         {
             this.catalogApp = catalogApp;
         }
+
+        public abstract HandlerResponse execute(Dictionary<string, string> parameters);
     }
 
-    public class AllWorkshopsResponse
+    public class AllWorkshopsResponse:Handler
     {
-        private CatalogApp catalogApp;
         private readonly string ALL_WORKSHOPS_STYLESHEET = "ALL_WORKSHOPS_STYLESHEET";
-        public AllWorkshopsResponse(CatalogApp catalogApp)
+        public AllWorkshopsResponse(CatalogApp catalogApp):base(catalogApp){}
+
+        public override HandlerResponse execute(Dictionary<string, string> parameters)
         {
-            this.catalogApp = catalogApp;
+            return getAllWorkshopsResponse();
         }
 
         public HandlerResponse getAllWorkshopsResponse()
@@ -170,9 +173,13 @@ namespace PatternOrientedRefactoringSimplification
 
     public class NewWorkshopResponse:Handler
     {
-        public NewWorkshopResponse(CatalogApp catalogApp):base(catalogApp)
+        public NewWorkshopResponse(CatalogApp catalogApp):base(catalogApp){}
+
+        public override HandlerResponse execute(Dictionary<string, string> parameters)
         {
+            return getNewWorkshopResponse(parameters);
         }
+
         public HandlerResponse getNewWorkshopResponse(Dictionary<string, string> parameters)
         {
             createNewWorkshop(parameters);
