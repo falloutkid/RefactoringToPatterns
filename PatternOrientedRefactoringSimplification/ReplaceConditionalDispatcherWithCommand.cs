@@ -47,62 +47,64 @@ namespace PatternOrientedRefactoringSimplification
         throw new NotImplementedException();
     }
     }
+    public class WorkshopManager
+    {
+        public string NextWorkshopID { set; get; }
+        public string WorkshopDir { get; set; }
+        public string WorkshopTemplate { get; set; }
+
+        internal StringBuilder createNewFileFromTemplate(string nextWorkshopID, string workshopDir, string workshopTemplate)
+        {
+            StringBuilder return_string = new StringBuilder();
+            return_string.Append(nextWorkshopID);
+            return_string.Append(workshopTemplate);
+            return_string.Append(workshopTemplate);
+            return return_string;
+        }
+
+        internal void addWorkshop(StringBuilder newWorkshopContents)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal WorkshopRepository getWorkshopRepository()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class HandlerResponse
+    {
+        private StringBuilder stringBuilder;
+        private string ALL_WORKSHOPS_STYLESHEET;
+
+        public HandlerResponse(StringBuilder stringBuilder, string ALL_WORKSHOPS_STYLESHEET)
+        {
+            // TODO: Complete member initialization
+            this.stringBuilder = stringBuilder;
+            this.ALL_WORKSHOPS_STYLESHEET = ALL_WORKSHOPS_STYLESHEET;
+        }
+    }
 
     public class CatalogApp
     {
-        private readonly string NEW_WORKSHOP = "NEW_WORKSHOP";
-        private readonly string ALL_WORKSHOPS = "ALL_WORKSHOPS";
-        private readonly string ALL_WORKSHOPS_STYLESHEET = "ALL_WORKSHOPS_STYLESHEET";
-        class HandlerResponse {
-            private StringBuilder stringBuilder;
-            private string ALL_WORKSHOPS_STYLESHEET;
-
-            public HandlerResponse(StringBuilder stringBuilder, string ALL_WORKSHOPS_STYLESHEET)
-            {
-                // TODO: Complete member initialization
-                this.stringBuilder = stringBuilder;
-                this.ALL_WORKSHOPS_STYLESHEET = ALL_WORKSHOPS_STYLESHEET;
-            }
-        }
-        public class WorkshopManager 
-        {
-            public string NextWorkshopID { set; get; }
-            public string WorkshopDir { get; set; }
-            public string WorkshopTemplate { get; set; }
-
-            internal StringBuilder createNewFileFromTemplate(string nextWorkshopID, string workshopDir, string workshopTemplate)
-            {
-                StringBuilder return_string = new StringBuilder();
-                return_string.Append(nextWorkshopID);
-                return_string.Append(workshopTemplate);
-                return_string.Append(workshopTemplate);
-                return return_string;
-            }
-
-            internal void addWorkshop(StringBuilder newWorkshopContents)
-            {
-                throw new NotImplementedException();
-            }
-
-            internal WorkshopRepository getWorkshopRepository()
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public readonly string NEW_WORKSHOP = "NEW_WORKSHOP";
+        public readonly string ALL_WORKSHOPS = "ALL_WORKSHOPS";
+        public readonly string ALL_WORKSHOPS_STYLESHEET = "ALL_WORKSHOPS_STYLESHEET";
 
         WorkshopManager workshopManager;
-        
+        public WorkshopManager WorkshopManager { get { return workshopManager; } }
 
-        CatalogApp() 
+        CatalogApp()
         {
             workshopManager = new WorkshopManager();
         }
 
-        private HandlerResponse executeActionAndGetResponse(String actionName, Dictionary<string, string> parameters)
+        public HandlerResponse executeActionAndGetResponse(String actionName, Dictionary<string, string> parameters)
         {
             if (actionName.Equals(NEW_WORKSHOP))
             {
-                return getNewWorkshopResponse(parameters);
+                return new NewWorkshopResponse(this).getNewWorkshopResponse(parameters);
             }
             else if (actionName.Equals(ALL_WORKSHOPS))
             {
@@ -129,23 +131,36 @@ namespace PatternOrientedRefactoringSimplification
             return new HandlerResponse(new StringBuilder(formattedXml), ALL_WORKSHOPS_STYLESHEET);
         }
 
-        private HandlerResponse getNewWorkshopResponse(Dictionary<string, string> parameters)
-        {
-            String nextWorkshopID = workshopManager.NextWorkshopID;
-            StringBuilder newWorkshopContents =
-              workshopManager.createNewFileFromTemplate(
-                nextWorkshopID,
-                workshopManager.WorkshopDir,
-                workshopManager.WorkshopTemplate
-              );
-            workshopManager.addWorkshop(newWorkshopContents);
-            parameters.Add("id", nextWorkshopID);
-            return executeActionAndGetResponse(ALL_WORKSHOPS, parameters);
-        }
-
         private string getFormattedData(string p)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class NewWorkshopResponse
+    {
+        private CatalogApp catalogApp;
+        public NewWorkshopResponse(CatalogApp catalogApp)
+        {
+            this.catalogApp = catalogApp;
+        }
+        public HandlerResponse getNewWorkshopResponse(Dictionary<string, string> parameters)
+        {
+            String nextWorkshopID = workshopManager().NextWorkshopID;
+            StringBuilder newWorkshopContents =
+              workshopManager().createNewFileFromTemplate(
+                nextWorkshopID,
+                workshopManager().WorkshopDir,
+                workshopManager().WorkshopTemplate
+              );
+            workshopManager().addWorkshop(newWorkshopContents);
+            parameters.Add("id", nextWorkshopID);
+            return catalogApp.executeActionAndGetResponse(catalogApp.ALL_WORKSHOPS, parameters);
+        }
+
+        private WorkshopManager workshopManager()
+        {
+            return catalogApp.WorkshopManager;
         }
     }
 }
