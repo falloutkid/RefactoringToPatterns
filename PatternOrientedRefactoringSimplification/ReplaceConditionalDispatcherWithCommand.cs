@@ -109,16 +109,18 @@ namespace PatternOrientedRefactoringSimplification
             handlers.Add(ALL_WORKSHOPS, new AllWorkshopsResponse(this));
         }
 
+        private Handler lookupHandlerBy(string handlerName)
+        {
+            if (handlers.ContainsKey(handlerName))
+                return handlers[handlerName];
+            return null;
+        }
+
         public HandlerResponse executeActionAndGetResponse(String actionName, Dictionary<string, string> parameters)
         {
-            if (actionName.Equals(NEW_WORKSHOP))
-            {
-                return new NewWorkshopResponse(this).execute(parameters);
-            }
-            else if (actionName.Equals(ALL_WORKSHOPS))
-            {
-                return new AllWorkshopsResponse(this).execute(parameters);
-            }
+            Handler handler = lookupHandlerBy(actionName);
+            if (handler != null)
+                return handler.execute(parameters);
             return null;
         }
     }
