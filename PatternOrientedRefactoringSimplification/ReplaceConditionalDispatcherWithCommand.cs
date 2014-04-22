@@ -114,6 +114,17 @@ namespace PatternOrientedRefactoringSimplification
         }
     }
 
+    #region WorkshopsResponse
+    public abstract class Handler
+    {
+        protected CatalogApp catalogApp;
+
+        public Handler(CatalogApp catalogApp)
+        {
+            this.catalogApp = catalogApp;
+        }
+    }
+
     public class AllWorkshopsResponse
     {
         private CatalogApp catalogApp;
@@ -157,12 +168,10 @@ namespace PatternOrientedRefactoringSimplification
         }
     }
 
-    public class NewWorkshopResponse
+    public class NewWorkshopResponse:Handler
     {
-        private CatalogApp catalogApp;
-        public NewWorkshopResponse(CatalogApp catalogApp)
+        public NewWorkshopResponse(CatalogApp catalogApp):base(catalogApp)
         {
-            this.catalogApp = catalogApp;
         }
         public HandlerResponse getNewWorkshopResponse(Dictionary<string, string> parameters)
         {
@@ -189,4 +198,5 @@ namespace PatternOrientedRefactoringSimplification
             return catalogApp.WorkshopManager;
         }
     }
+    #endregion
 }
