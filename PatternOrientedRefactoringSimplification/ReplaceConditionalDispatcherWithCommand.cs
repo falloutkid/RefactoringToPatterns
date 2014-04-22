@@ -104,11 +104,11 @@ namespace PatternOrientedRefactoringSimplification
         {
             if (actionName.Equals(NEW_WORKSHOP))
             {
-                return new NewWorkshopResponse(this).getNewWorkshopResponse(parameters);
+                return new NewWorkshopResponse(this).execute(parameters);
             }
             else if (actionName.Equals(ALL_WORKSHOPS))
             {
-                return new AllWorkshopsResponse(this).getAllWorkshopsResponse();
+                return new AllWorkshopsResponse(this).execute(parameters);
             }
             return null;
         }
