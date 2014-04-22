@@ -90,7 +90,8 @@ namespace PatternOrientedRefactoringSimplification
     {
         public readonly string NEW_WORKSHOP = "NEW_WORKSHOP";
         public readonly string ALL_WORKSHOPS = "ALL_WORKSHOPS";
-        
+
+        private Dictionary<string, Handler> handlers;
 
         WorkshopManager workshopManager;
         public WorkshopManager WorkshopManager { get { return workshopManager; } }
@@ -98,6 +99,14 @@ namespace PatternOrientedRefactoringSimplification
         CatalogApp()
         {
             workshopManager = new WorkshopManager();
+            createHandlers();
+        }
+
+        private void createHandlers()
+        {
+            handlers = new Dictionary<string, Handler>();
+            handlers.Add(NEW_WORKSHOP, new NewWorkshopResponse(this));
+            handlers.Add(ALL_WORKSHOPS, new AllWorkshopsResponse(this));
         }
 
         public HandlerResponse executeActionAndGetResponse(String actionName, Dictionary<string, string> parameters)
