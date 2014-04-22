@@ -42,6 +42,7 @@
     <Compile Include="ComposeMethod.cs" />
     <Compile Include="MoveEmbellishmentToDecorator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReplaceConditionalDispatcherWithCommand.cs" />
     <Compile Include="ReplaceConditionalLogic.cs" />
     <Compile Include="ReplaceImplicitTreeWithComposite.cs" />
     <Compile Include="ReplaceState_AlteringConditionalsWithState.cs" />
