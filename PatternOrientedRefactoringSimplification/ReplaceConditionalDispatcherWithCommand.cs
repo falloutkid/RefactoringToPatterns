@@ -106,22 +106,27 @@ namespace PatternOrientedRefactoringSimplification
             }
             else if (actionName.Equals(ALL_WORKSHOPS))
             {
-                XMLBuilder allWorkshopsXml = new XMLBuilder("workshops");
-                WorkshopRepository repository = workshopManager.getWorkshopRepository();
-
-                foreach (string id in repository.Workshop.Keys)
-                {
-                    Workshop workshop = repository.getWorkshop(id);
-                    allWorkshopsXml.addBelowParent("workshop");
-                    allWorkshopsXml.addAttribute("id", workshop.ID);
-                    allWorkshopsXml.addAttribute("name", workshop.Name);
-                    allWorkshopsXml.addAttribute("status", workshop.Status);
-                    allWorkshopsXml.addAttribute("duration", workshop.getDurationAsString());
-                }
-                String formattedXml = getFormattedData(allWorkshopsXml.ToString());
-                return new HandlerResponse(new StringBuilder(formattedXml), ALL_WORKSHOPS_STYLESHEET);
+                return getAllWorkshopsResponse();
             }
             return null;
+        }
+
+        private HandlerResponse getAllWorkshopsResponse()
+        {
+            XMLBuilder allWorkshopsXml = new XMLBuilder("workshops");
+            WorkshopRepository repository = workshopManager.getWorkshopRepository();
+
+            foreach (string id in repository.Workshop.Keys)
+            {
+                Workshop workshop = repository.getWorkshop(id);
+                allWorkshopsXml.addBelowParent("workshop");
+                allWorkshopsXml.addAttribute("id", workshop.ID);
+                allWorkshopsXml.addAttribute("name", workshop.Name);
+                allWorkshopsXml.addAttribute("status", workshop.Status);
+                allWorkshopsXml.addAttribute("duration", workshop.getDurationAsString());
+            }
+            String formattedXml = getFormattedData(allWorkshopsXml.ToString());
+            return new HandlerResponse(new StringBuilder(formattedXml), ALL_WORKSHOPS_STYLESHEET);
         }
 
         private HandlerResponse getNewWorkshopResponse(Dictionary<string, string> parameters)
