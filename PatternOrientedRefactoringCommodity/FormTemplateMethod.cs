@@ -35,31 +35,46 @@ namespace PatternOrientedRefactoringCommodity
         {
             return riskAmountFor(loan) * duration(loan) * riskFactorFor(loan);
         }
-        public abstract double riskAmountFor(Loan loan);
-        private double riskFactorFor(Loan loan)
+        private double riskAmountFor(Loan loan)
+        {
+            return loan.getCommitment() * UnusedPercentageFor(loan);
+        }
+
+        protected virtual double UnusedPercentageFor(Loan loan)
+        {
+            return 1.0;
+        }
+        protected abstract double riskFactorFor(Loan loan);
+        protected abstract double duration(Loan loan);
+    }
+
+    public class CapitalStrategyAdvisedLine : CapitalStrategy
+    {
+        protected override double UnusedPercentageFor(Loan loan)
+        {
+            return loan.getUnusedPercentage();
+        }
+        protected override double riskFactorFor(Loan loan)
         {
             return 2.0;
         }
 
-        private double duration(Loan loan)
+        protected override double duration(Loan loan)
         {
             return 1.0;
         }
     }
 
-    public class CapitalStrategyAdvisedLine : CapitalStrategy
-    {
-        public override double riskAmountFor(Loan loan)
-        {
-            return loan.getCommitment() * loan.getUnusedPercentage();
-        }       
-    }
-
     public class CapitalStrategyTermLoan : CapitalStrategy
     {
-        public override double riskAmountFor(Loan loan)
+        protected override double riskFactorFor(Loan loan)
         {
-            return loan.getCommitment();
+            return 2.0;
+        }
+
+        protected override double duration(Loan loan)
+        {
+            return 1.0;
         }
     }
 }
