@@ -38,7 +38,12 @@ namespace PatternOrientedRefactoringCommodity
     {
         public override double capital(Loan loan)
         {
-            return loan.getCommitment() * loan.getUnusedPercentage() * duration(loan) * riskFactorFor(loan);
+            return riskAmountFor(loan) * duration(loan) * riskFactorFor(loan);
+        }
+
+        private double riskAmountFor(Loan loan)
+        {
+            return loan.getCommitment() * loan.getUnusedPercentage();
         }
 
         private double riskFactorFor(Loan loan)
@@ -56,7 +61,12 @@ namespace PatternOrientedRefactoringCommodity
     {
         public override double capital(Loan loan)
         {
-            return loan.getCommitment() * duration(loan) * riskFactorFor(loan);
+            return riskAmountFor(loan) * duration(loan) * riskFactorFor(loan);
+        }
+
+        private double riskAmountFor(Loan loan)
+        {
+            return loan.getCommitment();
         }
 
         private double riskFactorFor(Loan loan)
