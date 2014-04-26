@@ -6,14 +6,36 @@ using System.Threading.Tasks;
 
 namespace PatternOrientedRefactoringCommodity
 {
-    public class Tag { }
+    public class Tag
+    {
+        int tag_begin_;
+        int tag_end_;
+        string tag_contents_;
+        string tag_line_;
+        public Tag(int tag_begin, int tag_end, string tag_contents, string tag_line)
+        {
+            tag_begin_ = tag_begin;
+            tag_end_ = tag_end;
+            tag_contents_ = tag_contents;
+            tag_line_ = tag_line;
+        }
+    }
     public class Node
     {
         public string PlainTextString { set; get; }
     }
+
+    public abstract class CompositeTag : Tag
+    {
+        public CompositeTag(int tag_begin, int tag_end, string tag_contents, string tag_line)
+            : base(tag_begin, tag_end, tag_contents, tag_line) { }
+    }
+
     public class LinkTag : Tag
     {
         private List<Node> linkData;
+        public LinkTag(int tag_begin, int tag_end, string tag_contents, string tag_line)
+            : base(tag_begin, tag_end, tag_contents, tag_line) { }
         public String toPlainTextString()
         {
             StringBuilder sb = new StringBuilder();
@@ -28,6 +50,8 @@ namespace PatternOrientedRefactoringCommodity
     public class FormTag : Tag
     {
         protected List<Node> allNodesList;
+        public FormTag(int tag_begin, int tag_end, string tag_contents, string tag_line)
+            : base(tag_begin, tag_end, tag_contents, tag_line) { }
         public String toPlainTextString()
         {
             StringBuilder stringRepresentation = new StringBuilder();
