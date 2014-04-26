@@ -31,7 +31,7 @@ namespace PatternOrientedRefactoringCommodity
             : base(tag_begin, tag_end, tag_contents, tag_line) { }
     }
 
-    public class LinkTag : Tag
+    public class LinkTag : CompositeTag
     {
         private List<Node> linkData;
         public LinkTag(int tag_begin, int tag_end, string tag_contents, string tag_line)
@@ -47,7 +47,7 @@ namespace PatternOrientedRefactoringCommodity
         }
     }
 
-    public class FormTag : Tag
+    public class FormTag : CompositeTag
     {
         protected List<Node> allNodesList;
         public FormTag(int tag_begin, int tag_end, string tag_contents, string tag_line)
