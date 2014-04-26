@@ -29,17 +29,18 @@ namespace PatternOrientedRefactoringCommodity
     {
         public CompositeTag(int tag_begin, int tag_end, string tag_contents, string tag_line)
             : base(tag_begin, tag_end, tag_contents, tag_line) { }
+
+        protected List<Node> children;
     }
 
     public class LinkTag : CompositeTag
     {
-        private List<Node> linkData;
         public LinkTag(int tag_begin, int tag_end, string tag_contents, string tag_line)
             : base(tag_begin, tag_end, tag_contents, tag_line) { }
         public String toPlainTextString()
         {
             StringBuilder sb = new StringBuilder();
-            foreach (Node node in linkData)
+            foreach (Node node in children)
             {
                 sb.Append(node.PlainTextString);
             }
@@ -49,13 +50,12 @@ namespace PatternOrientedRefactoringCommodity
 
     public class FormTag : CompositeTag
     {
-        protected List<Node> allNodesList;
         public FormTag(int tag_begin, int tag_end, string tag_contents, string tag_line)
             : base(tag_begin, tag_end, tag_contents, tag_line) { }
         public String toPlainTextString()
         {
             StringBuilder stringRepresentation = new StringBuilder();
-            foreach (Node node in allNodesList)
+            foreach (Node node in children)
             {
                 stringRepresentation.Append(node.PlainTextString);
             }
