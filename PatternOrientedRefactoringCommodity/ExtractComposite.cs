@@ -31,35 +31,27 @@ namespace PatternOrientedRefactoringCommodity
             : base(tag_begin, tag_end, tag_contents, tag_line) { }
 
         protected List<Node> children;
+        public String toPlainTextString()
+        {
+            StringBuilder string_builder = new StringBuilder();
+            foreach (Node node in children)
+            {
+                string_builder.Append(node.PlainTextString);
+            }
+            return string_builder.ToString();
+        }
     }
 
     public class LinkTag : CompositeTag
     {
         public LinkTag(int tag_begin, int tag_end, string tag_contents, string tag_line)
             : base(tag_begin, tag_end, tag_contents, tag_line) { }
-        public String toPlainTextString()
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (Node node in children)
-            {
-                sb.Append(node.PlainTextString);
-            }
-            return sb.ToString();
-        }
+
     }
 
     public class FormTag : CompositeTag
     {
         public FormTag(int tag_begin, int tag_end, string tag_contents, string tag_line)
             : base(tag_begin, tag_end, tag_contents, tag_line) { }
-        public String toPlainTextString()
-        {
-            StringBuilder stringRepresentation = new StringBuilder();
-            foreach (Node node in children)
-            {
-                stringRepresentation.Append(node.PlainTextString);
-            }
-            return stringRepresentation.ToString();
-        }
     }
 }
