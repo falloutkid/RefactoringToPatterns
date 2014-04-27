@@ -27,36 +27,26 @@ namespace PatternOrientedRefactoringCommodity
             specs.Add(colorSpec);
 
             return selectBy(specs);
-            /*
-            List<Product> return_list = new List<Product>();
-
-            foreach(Product product in product_lists)
-            {
-                if (product.Color == colorSpec.Color)
-                    return_list.Add(product);
-            }
-
-            return return_list;
-            */
         }
 
         public List<Product> selectBy(List<Spec> specs)
         {
+            CompositeSpec composite_spec = new CompositeSpec(specs);
             List<Product> return_list = new List<Product>();
 
             foreach (Product product in product_lists)
             {
                 bool is_match = true;
-                foreach(Spec spec in specs)
+                foreach (Spec spec in composite_spec.Specs)
                 {
-                    if(spec.GetType() == typeof(ColorSpec))
+                    if (spec.GetType() == typeof(ColorSpec))
                     {
-                        if(spec.SpecValue != product.Color)
+                        if (spec.SpecValue != product.Color)
                             is_match = false;
                     }
-                    else if(spec.GetType() == typeof(SizeSpec))
+                    else if (spec.GetType() == typeof(SizeSpec))
                     {
-                         if(spec.SpecValue != product.Size)
+                        if (spec.SpecValue != product.Size)
                             is_match = false;
                     }
                     else if (spec.GetType() == typeof(BelowPriceSpec))
@@ -113,15 +103,26 @@ namespace PatternOrientedRefactoringCommodity
         public static readonly string NOT_APPLICABLE = "NOT_APPLICABLE";
     }
 
+    #region Spec一覧
+    public class CompositeSpec
+    {
+        private List<Spec> specs_;
+        public List<Spec> Specs { get { return specs_; } }
+        public CompositeSpec(List<Spec> specs)
+        {
+            specs_ = specs;
+        }
+    }
+
     public class Spec
     {
         protected string spec = "";
         protected float price = 0.0F;
-        public string SpecValue{get{return spec;}}
+        public string SpecValue { get { return spec; } }
         public float Price { get { return price; } }
     }
 
-    public class ColorSpec:Spec
+    public class ColorSpec : Spec
     {
         public string Color { get { return spec; } }
 
@@ -140,14 +141,13 @@ namespace PatternOrientedRefactoringCommodity
             this.spec = size;
         }
     }
-    
+
     public class BelowPriceSpec : Spec
     {
-        public float Price { get { return price; } }
-
         public BelowPriceSpec(float price)
         {
             this.price = price;
         }
     }
+    #endregion
 }
