@@ -62,7 +62,8 @@ namespace UnitTestProject
             specs.Add(new ColorSpec(Color.red));
             specs.Add(new SizeSpec(ProductSize.SMALL));
             specs.Add(new BelowPriceSpec((float)10.00));
-            List<Product> foundProducts = repository.selectBy(specs);
+//            List<Product> foundProducts = repository.selectBy(specs);
+            List<Product> foundProducts = repository.selectBy(new CompositeSpec(specs));
             Assert.AreEqual(0, foundProducts.Count, "small red products below .00");
         }
     }

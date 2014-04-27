@@ -21,10 +21,10 @@ namespace PatternOrientedRefactoringCommodity
             product_lists.Add(product);
         }
 
-        public List<Product> selectBy(ColorSpec colorSpec)
+        public List<Product> selectBy(Spec spec)
         {
             List<Spec> specs = new List<Spec>();
-            specs.Add(colorSpec);
+            specs.Add(spec);
 
             return selectBy(specs);
         }
@@ -32,6 +32,11 @@ namespace PatternOrientedRefactoringCommodity
         public List<Product> selectBy(List<Spec> specs)
         {
             CompositeSpec composite_spec = new CompositeSpec(specs);
+            return selectBy(composite_spec);
+        }
+
+        public List<Product> selectBy(CompositeSpec composite_spec)
+        {
             List<Product> return_list = new List<Product>();
 
             foreach (Product product in product_lists)
@@ -87,7 +92,7 @@ namespace PatternOrientedRefactoringCommodity
     }
 
     #region Spec一覧
-    public class CompositeSpec
+    public class CompositeSpec:Spec
     {
         private List<Spec> specs_;
         public CompositeSpec(List<Spec> specs)
@@ -95,7 +100,7 @@ namespace PatternOrientedRefactoringCommodity
             specs_ = specs;
         }
 
-        public bool isSatisfiedBy(Product product)
+        public override bool isSatisfiedBy(Product product)
         {
             bool is_match = true;
             foreach (Spec spec in specs_)
@@ -112,7 +117,7 @@ namespace PatternOrientedRefactoringCommodity
                 }
                 else if (spec.GetType() == typeof(BelowPriceSpec))
                 {
-                    if (spec.Price != product.Price)
+                    if (spec.Price <= product.Price)
                         is_match = false;
                 }
             }
@@ -120,12 +125,13 @@ namespace PatternOrientedRefactoringCommodity
         }
     }
 
-    public class Spec
+    public abstract class Spec
     {
         protected string spec = "";
         protected float price = 0.0F;
         public string SpecValue { get { return spec; } }
         public float Price { get { return price; } }
+        public abstract bool isSatisfiedBy(Product product);
     }
 
     public class ColorSpec : Spec
@@ -135,6 +141,11 @@ namespace PatternOrientedRefactoringCommodity
         public ColorSpec(string color)
         {
             this.spec = color;
+        }
+
+        public override bool isSatisfiedBy(Product product)
+        {
+            return (product.Color == spec);
         }
     }
 
@@ -146,6 +157,11 @@ namespace PatternOrientedRefactoringCommodity
         {
             this.spec = size;
         }
+
+        public override bool isSatisfiedBy(Product product)
+        {
+            return (product.Size == spec);
+        }
     }
 
     public class BelowPriceSpec : Spec
@@ -153,6 +169,11 @@ namespace PatternOrientedRefactoringCommodity
         public BelowPriceSpec(float price)
         {
             this.price = price;
+        }
+
+        public override bool isSatisfiedBy(Product product)
+        {
+            return (product.Price <= price);
         }
     }
     #endregion
