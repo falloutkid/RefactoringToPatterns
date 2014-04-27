@@ -37,24 +37,7 @@ namespace PatternOrientedRefactoringCommodity
             foreach (Product product in product_lists)
             {
                 bool is_match = true;
-                foreach (Spec spec in composite_spec.Specs)
-                {
-                    if (spec.GetType() == typeof(ColorSpec))
-                    {
-                        if (spec.SpecValue != product.Color)
-                            is_match = false;
-                    }
-                    else if (spec.GetType() == typeof(SizeSpec))
-                    {
-                        if (spec.SpecValue != product.Size)
-                            is_match = false;
-                    }
-                    else if (spec.GetType() == typeof(BelowPriceSpec))
-                    {
-                        if (spec.Price != product.Price)
-                            is_match = false;
-                    }
-                }
+                is_match = composite_spec.isSatisfiedBy(product);
                 if (is_match)
                     return_list.Add(product);
             }
@@ -107,10 +90,33 @@ namespace PatternOrientedRefactoringCommodity
     public class CompositeSpec
     {
         private List<Spec> specs_;
-        public List<Spec> Specs { get { return specs_; } }
         public CompositeSpec(List<Spec> specs)
         {
             specs_ = specs;
+        }
+
+        public bool isSatisfiedBy(Product product)
+        {
+            bool is_match = true;
+            foreach (Spec spec in specs_)
+            {
+                if (spec.GetType() == typeof(ColorSpec))
+                {
+                    if (spec.SpecValue != product.Color)
+                        is_match = false;
+                }
+                else if (spec.GetType() == typeof(SizeSpec))
+                {
+                    if (spec.SpecValue != product.Size)
+                        is_match = false;
+                }
+                else if (spec.GetType() == typeof(BelowPriceSpec))
+                {
+                    if (spec.Price != product.Price)
+                        is_match = false;
+                }
+            }
+            return is_match;
         }
     }
 
