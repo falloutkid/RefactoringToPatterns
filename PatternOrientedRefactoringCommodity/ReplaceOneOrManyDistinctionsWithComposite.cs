@@ -95,9 +95,19 @@ namespace PatternOrientedRefactoringCommodity
     public class CompositeSpec:Spec
     {
         private List<Spec> specs_;
+        public CompositeSpec()
+        {
+            specs_ = new List<Spec>();
+        }
+
         public CompositeSpec(List<Spec> specs)
         {
             specs_ = specs;
+        }
+
+        public void Add(Spec spec)
+        {
+            specs_.Add(spec);
         }
 
         public override bool isSatisfiedBy(Product product)
