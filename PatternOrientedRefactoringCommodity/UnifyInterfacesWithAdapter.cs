@@ -75,10 +75,10 @@ namespace PatternOrientedRefactoringCommodity
     public class DOMBuilder : AbstractBuilder
     {
         private Document document;
-        private ElementAdapter rootNode;
-        private ElementAdapter parentNode;
-        private ElementAdapter currentNode;
-        private Stack<ElementAdapter> history = new Stack<ElementAdapter>();
+        private XMLNode rootNode;
+        private XMLNode parentNode;
+        private XMLNode currentNode;
+        private Stack<XMLNode> history = new Stack<XMLNode>();
         private string CANNOT_ADD_BESIDE_ROOT = "Cannnot add beside root";
         public void addAttribute(String name, String value)
         {
@@ -87,7 +87,7 @@ namespace PatternOrientedRefactoringCommodity
 
         public void addBelow(String child)
         {
-            ElementAdapter childNode = new ElementAdapter(document.createElement(child), document);
+            XMLNode childNode = new ElementAdapter(document.createElement(child), document);
             currentNode.add(childNode);
             parentNode = currentNode;
             currentNode = childNode;
@@ -97,7 +97,7 @@ namespace PatternOrientedRefactoringCommodity
         {
             if (currentNode == rootNode)
                 throw new Exception(CANNOT_ADD_BESIDE_ROOT);
-            ElementAdapter siblingNode = new ElementAdapter(document.createElement(sibling), document);
+            XMLNode siblingNode = new ElementAdapter(document.createElement(sibling), document);
             parentNode.add(siblingNode);
             currentNode = siblingNode;
             history.Pop();
