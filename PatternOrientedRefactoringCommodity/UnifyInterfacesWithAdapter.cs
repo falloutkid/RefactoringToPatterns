@@ -24,6 +24,19 @@ namespace PatternOrientedRefactoringCommodity
             throw new NotImplementedException();
         }
     }
+
+    class ElementAdapter
+    {
+        Element element_;
+
+        public Element getElement { get { return element_; } }
+
+        public ElementAdapter(Element element)
+        {
+            element_ = element;
+        }
+    }
+
     class Element
     {
         public void setAttribute(string name, string value)
