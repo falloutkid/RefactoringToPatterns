@@ -64,29 +64,46 @@ namespace PatternOrientedRefactoringCommodity
         private string CANNOT_ADD_BESIDE_ROOT = "Cannnot add beside root";
         public void addAttribute(String name, String value)
         {
-            currentNode.getElement.setAttribute(name, value);
+            addAttribute(currentNode, name, value);
         }
+
+        private void addAttribute(ElementAdapter current, String name, String value)
+        {
+            current.getElement.setAttribute(name, value);
+        }
+
         public void addBelow(String child)
         {
             ElementAdapter childNode = new ElementAdapter(document.createElement(child));
-            currentNode.getElement.appendChild(childNode.getElement);
+            add(currentNode, childNode);
             parentNode = currentNode;
             currentNode = childNode;
             history.Push(currentNode);
         }
-        public void addBeside(String sibling)
+        public void addSibling(String sibling)
         {
             if (currentNode == rootNode)
                 throw new Exception(CANNOT_ADD_BESIDE_ROOT);
             ElementAdapter siblingNode = new ElementAdapter(document.createElement(sibling));
-            parentNode.getElement.appendChild(siblingNode.getElement);
+            add(parentNode, siblingNode);
             currentNode = siblingNode;
             history.Pop();
             history.Push(currentNode);
         }
+
+        private void add(ElementAdapter parent, ElementAdapter child)
+        {
+            parent.getElement.appendChild(child.getElement);
+        }
+
         public void addValue(String value)
         {
-            currentNode.getElement.appendChild(document.createTextNode(value));
+            addValue(currentNode, value);
+        }
+        
+        private void addValue(ElementAdapter current, string value)
+        {
+            current.getElement.appendChild(document.createTextNode(value));
         }
     }
 
