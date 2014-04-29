@@ -25,7 +25,7 @@ namespace PatternOrientedRefactoringCommodity
         }
     }
 
-    class ElementAdapter
+    class ElementAdapter:XMLNode
     {
         Element element_;
         Document document_;
@@ -43,9 +43,10 @@ namespace PatternOrientedRefactoringCommodity
             element_.setAttribute(name, value);
         }
 
-        public void add(ElementAdapter child)
+        public void add(XMLNode child)
         {
-            element_.appendChild(child.getElement);
+            ElementAdapter child_element = (ElementAdapter)child;
+            element_.appendChild(child_element.getElement);
         }
 
         public void addValue(String value)
