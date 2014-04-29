@@ -42,6 +42,7 @@
     <Compile Include="ExtractComposite.cs" />
     <Compile Include="FormTemplateMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReplaceHardCodedNotificationsWithObserver.cs" />
     <Compile Include="ReplaceOneOrManyDistinctionsWithComposite.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

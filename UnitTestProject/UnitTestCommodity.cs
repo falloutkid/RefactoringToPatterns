@@ -66,4 +66,32 @@ namespace UnitTestProject
             Assert.AreEqual(0, foundProducts.Count, "small red products below .00");
         }
     }
+
+    [TestClass]
+    public class ReplaceHardCodedNotificationsWithObserverTest
+    {
+        [TestMethod]
+        public void run()
+        {
+            ConcreteCompany Company = new ConcreteCompany("アニマルランド");
+
+            //社長就任
+            Company.PresidentName = "ライオンキング";
+
+            //社員採用
+            Company.AddObserver(new ConcreteObserverWorker(Company, "パンダ"));
+            Company.AddObserver(new ConcreteObserverWorker(Company, "うさぎ"));
+            Company.AddObserver(new ConcreteObserverWorker(Company, "コアラ"));
+            Company.AddObserver(new ConcreteObserverWorker(Company, "シマウマ"));
+
+            //社員に通知
+            Company.SetChanged();
+
+            //社長交代（オブジェクトに変化あり）
+            Company.PresidentName = "空飛ぶダンボ";
+
+            //社員に通知
+            Company.SetChanged();
+        }
+    }
 }
