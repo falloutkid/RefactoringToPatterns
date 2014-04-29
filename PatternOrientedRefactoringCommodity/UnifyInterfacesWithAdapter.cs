@@ -28,12 +28,29 @@ namespace PatternOrientedRefactoringCommodity
     class ElementAdapter
     {
         Element element_;
+        Document document_;
 
         public Element getElement { get { return element_; } }
 
-        public ElementAdapter(Element element)
+        public ElementAdapter(Element element, Document document)
         {
             element_ = element;
+            document_ = document;
+        }
+
+        public void addAttribute(String name, String value)
+        {
+            element_.setAttribute(name, value);
+        }
+
+        public void add(ElementAdapter child)
+        {
+            element_.appendChild(child.getElement);
+        }
+
+        public void addValue(String value)
+        {
+            element_.appendChild(document_.createTextNode(value));
         }
     }
 
@@ -64,18 +81,13 @@ namespace PatternOrientedRefactoringCommodity
         private string CANNOT_ADD_BESIDE_ROOT = "Cannnot add beside root";
         public void addAttribute(String name, String value)
         {
-            addAttribute(currentNode, name, value);
-        }
-
-        private void addAttribute(ElementAdapter current, String name, String value)
-        {
-            current.getElement.setAttribute(name, value);
+            currentNode.addAttribute(name, value);
         }
 
         public void addBelow(String child)
         {
-            ElementAdapter childNode = new ElementAdapter(document.createElement(child));
-            add(currentNode, childNode);
+            ElementAdapter childNode = new ElementAdapter(document.createElement(child), document);
+            currentNode.add(childNode);
             parentNode = currentNode;
             currentNode = childNode;
             history.Push(currentNode);
@@ -84,26 +96,16 @@ namespace PatternOrientedRefactoringCommodity
         {
             if (currentNode == rootNode)
                 throw new Exception(CANNOT_ADD_BESIDE_ROOT);
-            ElementAdapter siblingNode = new ElementAdapter(document.createElement(sibling));
-            add(parentNode, siblingNode);
+            ElementAdapter siblingNode = new ElementAdapter(document.createElement(sibling), document);
+            parentNode.add(siblingNode);
             currentNode = siblingNode;
             history.Pop();
             history.Push(currentNode);
         }
 
-        private void add(ElementAdapter parent, ElementAdapter child)
-        {
-            parent.getElement.appendChild(child.getElement);
-        }
-
         public void addValue(String value)
         {
-            addValue(currentNode, value);
-        }
-        
-        private void addValue(ElementAdapter current, string value)
-        {
-            current.getElement.appendChild(document.createTextNode(value));
+            currentNode.addValue(value);
         }
     }
 
