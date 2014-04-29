@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace PatternOrientedRefactoringCommodity
 {
+    interface XMLNode
+    {
+        void add(XMLNode childNode);
+        void addValue(String value);
+        void addAttribute(String name, String value);
+    }
+
     class Document
     {
         public Element createElement(string child)
@@ -70,7 +77,7 @@ namespace PatternOrientedRefactoringCommodity
         }
     }
 
-    class TagNode
+    class TagNode:XMLNode
     {
         public string TagName { set; get; }
 
@@ -93,7 +100,7 @@ namespace PatternOrientedRefactoringCommodity
             throw new NotImplementedException();
         }
 
-        public void add(TagNode currentNode)
+        public void add(XMLNode currentNode)
         {
             throw new NotImplementedException();
         }
