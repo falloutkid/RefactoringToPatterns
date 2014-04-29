@@ -57,36 +57,36 @@ namespace PatternOrientedRefactoringCommodity
     public class DOMBuilder : AbstractBuilder
     {
         private Document document;
-        private Element root;
-        private Element parent;
-        private Element current;
-        private Stack<Element> history = new Stack<Element>();
+        private ElementAdapter rootNode;
+        private ElementAdapter parentNode;
+        private ElementAdapter currentNode;
+        private Stack<ElementAdapter> history = new Stack<ElementAdapter>();
         private string CANNOT_ADD_BESIDE_ROOT = "Cannnot add beside root";
         public void addAttribute(String name, String value)
         {
-            current.setAttribute(name, value);
+            currentNode.getElement.setAttribute(name, value);
         }
         public void addBelow(String child)
         {
-            Element childNode = document.createElement(child);
-            current.appendChild(childNode);
-            parent = current;
-            current = childNode;
-            history.Push(current);
+            ElementAdapter childNode = new ElementAdapter(document.createElement(child));
+            currentNode.getElement.appendChild(childNode.getElement);
+            parentNode = currentNode;
+            currentNode = childNode;
+            history.Push(currentNode);
         }
         public void addBeside(String sibling)
         {
-            if (current == root)
+            if (currentNode == rootNode)
                 throw new Exception(CANNOT_ADD_BESIDE_ROOT);
-            Element siblingNode = document.createElement(sibling);
-            parent.appendChild(siblingNode);
-            current = siblingNode;
+            ElementAdapter siblingNode = new ElementAdapter(document.createElement(sibling));
+            parentNode.getElement.appendChild(siblingNode.getElement);
+            currentNode = siblingNode;
             history.Pop();
-            history.Push(current);
+            history.Push(currentNode);
         }
         public void addValue(String value)
         {
-            current.appendChild(document.createTextNode(value));
+            currentNode.getElement.appendChild(document.createTextNode(value));
         }
     }
 

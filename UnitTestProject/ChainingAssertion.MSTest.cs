@@ -487,7 +487,7 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
                 throw new AssertFailedException(msg);
             }
 
-            var r = StructuralEqual(actual, expected, new[] { actual.GetType().Name }); // root type
+            var r = StructuralEqual(actual, expected, new[] { actual.GetType().Name }); // rootNode type
             if (!r.IsEquals)
             {
                 var msg = string.Format("is not structural equal, failed at {0}, actual = {1} expected = {2}{3}",
@@ -509,7 +509,7 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
                 return;
             }
 
-            var r = StructuralEqual(actual, expected, new[] { actual.GetType().Name }); // root type
+            var r = StructuralEqual(actual, expected, new[] { actual.GetType().Name }); // rootNode type
             if (r.IsEquals)
             {
                 throw new AssertFailedException("is structural equal" + message);
