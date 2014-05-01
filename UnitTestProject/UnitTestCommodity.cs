@@ -94,4 +94,38 @@ namespace UnitTestProject
             Company.SetChanged();
         }
     }
+
+    [TestClass]
+    public class ExtractAdapterTest
+    {
+        public TestContext TestContext { set; get; }
+
+        Query query;
+        [TestMethod]
+        [TestCase("database1", "hoge", "fuga", null, false)]
+        [TestCase("database1", "hoge", "fuga", "fugafuga", true)]
+        public void TestLoginToDatabase()
+        {
+            TestContext.Run((string database, string id, string password, string config_file, bool isUsingSDVersion52) =>
+                {
+                    try
+                    {
+                        if (isUsingSDVersion52)
+                        {
+                            query = new Query();
+                            query.login(database, id, password, config_file);
+                        }
+                        else
+                        {
+                            query = new QuerySD51();
+                            query.login(database, id, password);
+                        }
+                    }
+                    catch (QueryException ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex.Message);
+                    }
+                });
+        }
+    }
 }

@@ -122,35 +122,20 @@ namespace PatternOrientedRefactoringCommodity
 
     #region リファクタリング対象コード
     public class Query
-    {
-        private SDLogin sdLogin; // needed for SD version 5.1 
-        private SDSession sdSession; // needed for SD version 5.1 
+    { 
         private SDLoginSession sdLoginSession; // needed for SD version 5.2 
-        private bool sd52; // tells if we're running under SD 5.2
-        private SDQuery sdQuery; // this is needed for SD versions 5.1 & 5.2 
+        protected SDQuery sdQuery; // this is needed for SD versions 5.1 & 5.2 
 
         // this is a login for SD 5.1
         // NOTE: remove this when we convert all aplications to 5.2 
         public void login(String server, String user, String password)
         {
-            sd52 = false;
-            try
-            {
-                sdSession = sdLogin.loginSession(server, user, password);
-            }
-            catch (SDLoginFailedException login_fail_exception)
-            {
-                throw new QueryException("Login failure\n" + login_fail_exception, login_fail_exception);
-            }
-            catch (SDSocketInitFailedException init_fail_exception)
-            {
-                throw new QueryException("Socket fail\n" + init_fail_exception, init_fail_exception);
-            }
+            // QuerySD51に責務を移動
         }
-        // 5.2 login public
-        void login(String server, String user, String password, String sdConfigFileName)
+
+        // 5.2 login
+        public void login(String server, String user, String password, String sdConfigFileName)
         {
-            sd52 = true;
             sdLoginSession = new SDLoginSession(sdConfigFileName, false);
             try
             {
@@ -173,16 +158,27 @@ namespace PatternOrientedRefactoringCommodity
         {
             if (sdQuery != null)
                 sdQuery.clearResultSet();
-            if (sd52)
-                sdQuery = sdLoginSession.createQuery(SDQuery.OPEN_FOR_QUERY);
-            else 
-                sdQuery = sdSession.createQuery(SDQuery.OPEN_FOR_QUERY);
+            sdQuery = sdLoginSession.createQuery(SDQuery.OPEN_FOR_QUERY);
             executeQuery();
         }
 
-        private void executeQuery()
+        protected void executeQuery()
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class QuerySD51 :Query
+    {
+        private SDLogin sdLogin; // needed for SD version 5.1 
+        private SDSession sdSession; // needed for SD version 5.1 
+        public QuerySD51() : base() { }
+        public void doQuery()
+        {
+            if (sdQuery != null)
+                sdQuery.clearResultSet();
+                sdQuery = sdSession.createQuery(SDQuery.OPEN_FOR_QUERY);
+            executeQuery();
         }
     }
     #endregion
