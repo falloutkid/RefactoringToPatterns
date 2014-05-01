@@ -100,7 +100,7 @@ namespace UnitTestProject
     {
         public TestContext TestContext { set; get; }
 
-        Query query;
+        AbstractQuery query;
         [TestMethod]
         [TestCase("database1", "hoge", "fuga", null, false)]
         [TestCase("database1", "hoge", "fuga", "fugafuga", true)]
@@ -112,14 +112,13 @@ namespace UnitTestProject
                     {
                         if (isUsingSDVersion52)
                         {
-                            query = new Query();
-                            query.login(database, id, password, config_file);
+                            query = new QuerySD52(config_file);
                         }
                         else
                         {
                             query = new QuerySD51();
-                            query.login(database, id, password);
                         }
+                        query.login(database, id, password);
                     }
                     catch (QueryException ex)
                     {
